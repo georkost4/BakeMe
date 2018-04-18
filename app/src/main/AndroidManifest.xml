@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ /*
+  ~  * This file is subject to the terms and conditions defined in
+  ~  * file 'LICENSE.txt', which is part of this source code package.
+  ~  */
+  -->
+
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.dsktp.sora.bakeme">
+
+    <uses-permission android:name="android.permission.INTERNET"> </uses-permission>
 
     <application
         android:allowBackup="true"

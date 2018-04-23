@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ /*
+  ~  * This file is subject to the terms and conditions defined in
+  ~  * file 'LICENSE.txt', which is part of this source code package.
+  ~  */
+  -->
+
+
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:mlns="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/tv_recipe_name_tag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:textSize="14sp"
+        mlns:layout_constraintStart_toStartOf="parent"
+        mlns:layout_constraintTop_toTopOf="parent"
+        android:text="Name" />
+
+    <TextView
+        android:id="@+id/tv_recipe_name_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:textSize="14sp"
+        mlns:layout_constraintStart_toEndOf="@+id/tv_recipe_name_tag"
+        mlns:layout_constraintTop_toTopOf="parent"
+        android:text="Merenda" />
+
+
+    <TextView
+        android:id="@+id/tv_recipe_servings_tag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="Servings"
+        android:textSize="14sp"
+        mlns:layout_constraintBaseline_toBaselineOf="@+id/tv_recipe_servings_value"
+        mlns:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_recipe_servings_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:textSize="14sp"
+        mlns:layout_constraintStart_toEndOf="@+id/tv_recipe_servings_tag"
+        mlns:layout_constraintTop_toBottomOf="@+id/tv_recipe_name_value"
+        tools:text="2" />
+
+    <ImageView
+        android:id="@+id/iv_recipe_image"
+        android:layout_width="219dp"
+        android:layout_height="84dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:adjustViewBounds="true"
+        mlns:layout_constraintBottom_toBottomOf="parent"
+        mlns:layout_constraintEnd_toEndOf="parent"
+        mlns:layout_constraintHorizontal_bias="1.0"
+        mlns:layout_constraintStart_toEndOf="@+id/tv_recipe_name_value"
+        mlns:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@color/colorPrimaryDark"
+        mlns:layout_constraintBottom_toBottomOf="parent"
+        mlns:layout_constraintEnd_toEndOf="parent"
+        mlns:layout_constraintStart_toStartOf="parent"
+        mlns:layout_constraintTop_toBottomOf="@+id/iv_recipe_image"
+        mlns:layout_constraintVertical_bias="0.0" />
+
+</android.support.constraint.ConstraintLayout>

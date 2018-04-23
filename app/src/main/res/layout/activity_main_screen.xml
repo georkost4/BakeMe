@@ -14,4 +14,7 @@
         android:id="@+id/master_view_fragment">
     </FrameLayout>
 
+
+    
+
 </android.support.constraint.ConstraintLayout>

@@ -42,7 +42,7 @@ public class MainScreenActivity extends AppCompatActivity implements MyRecipeAda
     public void handleRecipeClicked(int position, ArrayList<Recipe> recipes)
     {
         // Show recipe detail fragment
-        DetailFragment detailFragment = new DetailFragment(recipes);
+        DetailFragment detailFragment = new DetailFragment(recipes.get(position));
 
         mManager.beginTransaction().replace(R.id.master_view_fragment,detailFragment).addToBackStack("").commit();
 

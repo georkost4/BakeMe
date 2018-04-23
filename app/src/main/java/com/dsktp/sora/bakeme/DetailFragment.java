@@ -11,10 +11,15 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.dsktp.sora.bakeme.Adapter.MyIngredientsAdapter;
+import com.dsktp.sora.bakeme.Adapter.MyStepAdapter;
 import com.dsktp.sora.bakeme.Model.Recipe;
 
 import java.lang.reflect.Array;
@@ -28,17 +33,35 @@ import java.util.ArrayList;
  */
 public class DetailFragment extends Fragment
 {
-    private ArrayList<Recipe> mRecipeList;
+    private Recipe  mRecipeClicked;
 
-
-    public DetailFragment(ArrayList<Recipe> recipes) {
-        mRecipeList = recipes;
+    public DetailFragment(Recipe recipe) {
+        mRecipeClicked = recipe;
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View inflatedView = inflater.inflate(R.layout.fragment_recipe_step_list,container,false);
+
+        MyStepAdapter adapter = new MyStepAdapter();
+
+        RecyclerView recyclerView = inflatedView.findViewById(R.id.rv_recipe_step_description);
+
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        adapter.setData(mRecipeClicked.getSteps());
+
+
+        MyIngredientsAdapter ingredientsAdapter = new MyIngredientsAdapter();
+
+        RecyclerView rvIngredients = inflatedView.findViewById(R.id.rv_ingredients_list);
+        rvIngredients.setAdapter(ingredientsAdapter);
+        rvIngredients.setLayoutManager(new GridLayoutManager(inflatedView.getContext(),2));
+
+        ingredientsAdapter.setData(mRecipeClicked.getIngredients());
+
         return inflatedView;
     }
 }

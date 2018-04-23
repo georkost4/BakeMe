@@ -14,9 +14,16 @@ package com.dsktp.sora.bakeme.Model;
  * UDACITY ND programm.
  */
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.PrimaryKey;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
+
+import static com.dsktp.sora.bakeme.Utils.Constants.TABLE_NAME;
 
 /**
  * This class is used to describe a Recipe object
@@ -28,13 +35,21 @@ import java.util.ArrayList;
  * int servings representing the amount of serving's from the recipe
  * String Image representing the image of the final product created from this recipe
  */
+@Entity(tableName = TABLE_NAME)
 public class Recipe
 {
+    @PrimaryKey
+    @ColumnInfo(name = "recipe_id")
     private int id;
+    @ColumnInfo(name = "recipe_name")
     private String name;
+    @ColumnInfo(name = "recipe_ingredient_list",typeAffinity = ColumnInfo.TEXT)
     private ArrayList<Ingredient> ingredients;
+    @ColumnInfo(name = "recipe_step_list")
     private ArrayList<Step> steps;
+    @ColumnInfo(name = "recipe_serving")
     private int servings;
+    @ColumnInfo(name = "recipe_image_url")
     @SerializedName("image")
     private String imageURL;
 

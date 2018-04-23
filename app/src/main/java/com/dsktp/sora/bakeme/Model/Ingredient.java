@@ -15,6 +15,10 @@ package com.dsktp.sora.bakeme.Model;
  */
 
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.PrimaryKey;
+
 /**
  * This class represents an Ingredient object used by a Recipe object
  * It contains the following fields:
@@ -22,6 +26,7 @@ package com.dsktp.sora.bakeme.Model;
  * String measure represents the measuring system kg,g,lb
  * String ingredient represents the name of the ingredient
  */
+
 public class Ingredient
 {
     private double quantity;

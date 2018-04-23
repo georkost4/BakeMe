@@ -5,17 +5,22 @@
  *
  */
 
-package com.dsktp.sora.bakeme.Rest;
+package com.dsktp.sora.bakeme.Model;
 
+import android.app.Application;
+import android.arch.lifecycle.AndroidViewModel;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.ViewModel;
+import android.arch.persistence.room.Room;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.dsktp.sora.bakeme.Model.Recipe;
+import com.dsktp.sora.bakeme.Repository.Local.RecipeDatabase;
+import com.dsktp.sora.bakeme.Repository.Remote.WebService;
 import com.dsktp.sora.bakeme.Utils.Constants;
-import com.google.gson.reflect.TypeToken;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import retrofit2.Call;
@@ -23,32 +28,53 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.GET;
+
+import static com.dsktp.sora.bakeme.Utils.Constants.DATABASE_NAME;
 
 /**
  * This file created by Georgios Kostogloudis
- * and was last modified on 18/4/2018.
+ * and was last modified on 19/4/2018.
  * The name of the project is BakeMe and it was created as part of
  * UDACITY ND programm.
  */
-public class RecipeClient {
+public class RecipeViewModel extends AndroidViewModel
+{
 
-    public interface RecipeClientRetrofit
-    {
-        @GET("baking.json")
-        Call<List<Recipe>> getRecipes();
+    private MutableLiveData<ArrayList<Recipe>> mRecipesList;
+    private WebService webService;
+
+    public RecipeViewModel(@NonNull Application application) {
+        super(application);
     }
 
 
-    public static ArrayList<Recipe> makeRequest()
+    public LiveData<ArrayList<Recipe>> init()
+    {
+        if(mRecipesList == null)
+        {
+            mRecipesList = new MutableLiveData<>();
+            makeRequest();
+        }
+        return mRecipesList;
+    }
+
+
+    public LiveData<ArrayList<Recipe>> getRecipeList() {
+        return this.mRecipesList;
+    }
+
+    public void setmRecipesList(ArrayList<Recipe> mRecipesList) {
+        this.mRecipesList.setValue(mRecipesList);
+    }
+
+    private void  makeRequest()
     {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constants.RECIPE_LIST_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        RecipeClientRetrofit service = retrofit.create(RecipeClientRetrofit.class);
+        WebService service = retrofit.create(WebService.class);
 
-        Type typeCollection = new TypeToken<Collection<Recipe>>(){}.getType();
 
 
         Call<List<Recipe>> response = service.getRecipes();
@@ -61,6 +87,8 @@ public class RecipeClient {
                     //successful response
                     Log.d("dEBUG",response.toString());
                     String resp = String.valueOf(response.body().size());
+
+                    mRecipesList.setValue((ArrayList<Recipe>) response.body());
                     Log.d("DEBUG",resp);
                 }
                 else
@@ -75,9 +103,5 @@ public class RecipeClient {
                 t.printStackTrace();
             }
         });
-        return new ArrayList<Recipe>();
     }
-
-
-
 }

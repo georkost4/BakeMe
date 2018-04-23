@@ -21,4 +21,6 @@ package com.dsktp.sora.bakeme.Utils;
 public class Constants
 {
     public static final String RECIPE_LIST_URL = "https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/";
+    public static final String DATABASE_NAME = "baking.db";
+    public static final String TABLE_NAME = "recipe";
 }

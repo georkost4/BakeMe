@@ -4,19 +4,34 @@
  *  * This file is subject to the terms and conditions defined in
  *  * file 'LICENSE.txt', which is part of this source code package.
  *
+ *
  */
 
-package com.dsktp.sora.bakeme;
+/*
+ *
+ *  * This file is subject to the terms and conditions defined in
+ *  * file 'LICENSE.txt', which is part of this source code package.
+ *
+ */
+
+package com.dsktp.sora.bakeme.UI;
 
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
 import com.dsktp.sora.bakeme.Adapter.MyRecipeAdapter;
 import com.dsktp.sora.bakeme.Adapter.MyStepAdapter;
+import com.dsktp.sora.bakeme.Controller.MainScreenController;
 import com.dsktp.sora.bakeme.Model.Recipe;
 import com.dsktp.sora.bakeme.Model.Step;
+import com.dsktp.sora.bakeme.R;
+import com.dsktp.sora.bakeme.UI.Fragment.DetailFragment;
+import com.dsktp.sora.bakeme.UI.Fragment.MasterRecipeListFragment;
+import com.dsktp.sora.bakeme.UI.Fragment.NavBarFragment;
+import com.dsktp.sora.bakeme.UI.Fragment.StepDetailFragment;
 
 import java.util.ArrayList;
 
@@ -25,6 +40,7 @@ public class MainScreenActivity extends AppCompatActivity implements MyRecipeAda
 
     private MainScreenController mController;
     private FragmentManager mManager;
+    private boolean mTwoPane = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +49,7 @@ public class MainScreenActivity extends AppCompatActivity implements MyRecipeAda
 
         mController = new MainScreenController(this);
         mManager = getSupportFragmentManager();
+        mTwoPane = getResources().getBoolean(R.bool.twoPane);
 
         if(savedInstanceState==null) {
             mController.getRecipes();
@@ -61,10 +78,21 @@ public class MainScreenActivity extends AppCompatActivity implements MyRecipeAda
         StepDetailFragment detailFragment = new StepDetailFragment(stepClicked);
 
         //show nav bar if  in phone mode
-        findViewById(R.id.fragment_placeholder_nav_bar).setVisibility(View.VISIBLE);
-        mManager.beginTransaction()
-                .replace(R.id.fragment_placeholder_recipe_list,detailFragment)
-                .add(R.id.fragment_placeholder_nav_bar,new NavBarFragment())
-                .addToBackStack("").commit();
+        if(!mTwoPane)
+        {
+            findViewById(R.id.fragment_placeholder_nav_bar).setVisibility(View.VISIBLE);
+            mManager.beginTransaction()
+                    .replace(R.id.fragment_placeholder_recipe_list,detailFragment)
+                    .add(R.id.fragment_placeholder_nav_bar,new NavBarFragment())
+                    .addToBackStack("").commit();
+        }
+        else
+        {
+            //In tablet mode
+            // change the step
+            mManager.beginTransaction().replace(R.id.right_part_placeholder,detailFragment)
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                    .commit();
+        }
     }
 }

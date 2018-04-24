@@ -7,7 +7,31 @@
  *
  */
 
-package com.dsktp.sora.bakeme;
+/*
+ *
+ *  * This file is subject to the terms and conditions defined in
+ *  * file 'LICENSE.txt', which is part of this source code package.
+ *
+ *
+ */
+
+/*
+ *
+ *  * This file is subject to the terms and conditions defined in
+ *  * file 'LICENSE.txt', which is part of this source code package.
+ *
+ *
+ */
+
+/*
+ *
+ *  * This file is subject to the terms and conditions defined in
+ *  * file 'LICENSE.txt', which is part of this source code package.
+ *
+ *
+ */
+
+package com.dsktp.sora.bakeme.UI.Fragment;
 
 import android.content.res.Configuration;
 import android.graphics.drawable.GradientDrawable;
@@ -24,6 +48,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.dsktp.sora.bakeme.Model.Step;
+import com.dsktp.sora.bakeme.R;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
@@ -57,6 +82,7 @@ public class StepDetailFragment extends Fragment {
     private SimpleExoPlayerView mPlayerView;
     private ExoPlayer mExoPlayer;
     private long mCurrentPosition = 0;
+    private boolean mTwoPane = false;
 
     public StepDetailFragment(){}
     public StepDetailFragment(Step mStepClicked) {
@@ -68,12 +94,13 @@ public class StepDetailFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View inflatedView = inflater.inflate(R.layout.fragment_recipe_step_detail, container, false);
+        mTwoPane = getResources().getBoolean(R.bool.twoPane);
         if(savedInstanceState!=null)
         {
             mCurrentPosition = savedInstanceState.getLong("current_pos");
             mStepClicked = savedInstanceState.getParcelable("step_clicked");
         }
-        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT && !mTwoPane) {
             TextView fullDescriptionTextView = inflatedView.findViewById(R.id.tv_step_full_description_value);
             fullDescriptionTextView.setText(mStepClicked.getDescription());
         }

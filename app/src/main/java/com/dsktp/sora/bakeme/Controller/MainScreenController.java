@@ -3,6 +3,7 @@
  *  * This file is subject to the terms and conditions defined in
  *  * file 'LICENSE.txt', which is part of this source code package.
  *
+ *
  */
 
 /*
@@ -12,17 +13,24 @@
  *
  */
 
-package com.dsktp.sora.bakeme;
+/*
+ *
+ *  * This file is subject to the terms and conditions defined in
+ *  * file 'LICENSE.txt', which is part of this source code package.
+ *
+ */
 
-import android.content.Intent;
+package com.dsktp.sora.bakeme.Controller;
+
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.dsktp.sora.bakeme.Adapter.MyRecipeAdapter;
 import com.dsktp.sora.bakeme.Model.Recipe;
+import com.dsktp.sora.bakeme.R;
 import com.dsktp.sora.bakeme.Rest.WebService;
+import com.dsktp.sora.bakeme.UI.MainScreenActivity;
 import com.dsktp.sora.bakeme.Utils.Constants;
 import com.google.gson.reflect.TypeToken;
 
@@ -44,7 +52,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * UDACITY ND programm.
  */
 public class MainScreenController implements WebService {
-    private final MainScreenActivity MainScreenActivity;
+    private final com.dsktp.sora.bakeme.UI.MainScreenActivity MainScreenActivity;
     private String DEBUG_TAG = "MainScreenController";
 
     public MainScreenController(MainScreenActivity mainScreenActivity) {

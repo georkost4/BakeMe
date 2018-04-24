@@ -3,14 +3,39 @@
  *  * This file is subject to the terms and conditions defined in
  *  * file 'LICENSE.txt', which is part of this source code package.
  *
+ *
  */
 
-package com.dsktp.sora.bakeme;
+/*
+ *
+ *  * This file is subject to the terms and conditions defined in
+ *  * file 'LICENSE.txt', which is part of this source code package.
+ *
+ *
+ */
+
+/*
+ *
+ *  * This file is subject to the terms and conditions defined in
+ *  * file 'LICENSE.txt', which is part of this source code package.
+ *
+ *
+ */
+
+/*
+ *
+ *  * This file is subject to the terms and conditions defined in
+ *  * file 'LICENSE.txt', which is part of this source code package.
+ *
+ */
+
+package com.dsktp.sora.bakeme.UI.Fragment;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,6 +46,7 @@ import android.view.ViewGroup;
 import com.dsktp.sora.bakeme.Adapter.MyIngredientsAdapter;
 import com.dsktp.sora.bakeme.Adapter.MyStepAdapter;
 import com.dsktp.sora.bakeme.Model.Recipe;
+import com.dsktp.sora.bakeme.R;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -43,6 +69,12 @@ public class DetailFragment extends Fragment
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        //restore the list on screen - orientation change
+        if(savedInstanceState != null)
+        {
+            mRecipeClicked = savedInstanceState.getParcelable("recipe_list");
+        }
+
         View inflatedView = inflater.inflate(R.layout.fragment_recipe_step_list,container,false);
 
         MyStepAdapter adapter = new MyStepAdapter();
@@ -53,17 +85,7 @@ public class DetailFragment extends Fragment
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        //restore the list on screen - orientation change
-        if(savedInstanceState == null)
-        {
-            adapter.setData(mRecipeClicked.getSteps());
-        }
-        else
-        {
-            mRecipeClicked = savedInstanceState.getParcelable("recipe_list");
-            adapter.setData(mRecipeClicked.getSteps());
-        }
-
+        adapter.setData(mRecipeClicked.getSteps());
 
 
         MyIngredientsAdapter ingredientsAdapter = new MyIngredientsAdapter();
@@ -73,6 +95,14 @@ public class DetailFragment extends Fragment
         rvIngredients.setLayoutManager(new GridLayoutManager(inflatedView.getContext(),2));
 
         ingredientsAdapter.setData(mRecipeClicked.getIngredients());
+
+        boolean twoPane = getResources().getBoolean(R.bool.twoPane);
+        if(twoPane)
+        {
+            FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+            StepDetailFragment fragment = new StepDetailFragment(mRecipeClicked.getSteps().get(0));
+            ft.add(R.id.right_part_placeholder,fragment).commit();
+        }
 
         return inflatedView;
     }

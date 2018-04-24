@@ -9,6 +9,8 @@
 
 package com.dsktp.sora.bakeme;
 
+import android.content.res.Configuration;
+import android.graphics.drawable.GradientDrawable;
 import android.media.MediaDataSource;
 import android.net.Uri;
 import android.os.Bundle;
@@ -54,7 +56,9 @@ public class StepDetailFragment extends Fragment {
     private Step mStepClicked;
     private SimpleExoPlayerView mPlayerView;
     private ExoPlayer mExoPlayer;
+    private long mCurrentPosition = 0;
 
+    public StepDetailFragment(){}
     public StepDetailFragment(Step mStepClicked) {
         this.mStepClicked = mStepClicked;
     }
@@ -64,9 +68,15 @@ public class StepDetailFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View inflatedView = inflater.inflate(R.layout.fragment_recipe_step_detail, container, false);
-
-        TextView fullDescriptionTextView = inflatedView.findViewById(R.id.tv_step_full_description_value);
-        fullDescriptionTextView.setText(mStepClicked.getDescription());
+        if(savedInstanceState!=null)
+        {
+            mCurrentPosition = savedInstanceState.getLong("current_pos");
+            mStepClicked = savedInstanceState.getParcelable("step_clicked");
+        }
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            TextView fullDescriptionTextView = inflatedView.findViewById(R.id.tv_step_full_description_value);
+            fullDescriptionTextView.setText(mStepClicked.getDescription());
+        }
 
         //Set up exo player
         mPlayerView = inflatedView.findViewById(R.id.simpleExoPlayerView);
@@ -93,6 +103,8 @@ public class StepDetailFragment extends Fragment {
         MediaSource mediaSource = new ExtractorMediaSource(Uri.parse(mStepClicked.getVideoURL()),
                 dataSourceFactory, extractorsFactory, null, null);
         mExoPlayer.prepare(mediaSource);
+
+        mExoPlayer.seekTo(mCurrentPosition);
     }
 
     private void releasePlayer() {
@@ -104,8 +116,8 @@ public class StepDetailFragment extends Fragment {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        mExoPlayer.getCurrentPosition();
-        mStepClicked
+        outState.putLong("current_pos",mExoPlayer.getCurrentPosition());
+        outState.putParcelable("step_clicked",mStepClicked);
     }
 
     @Override

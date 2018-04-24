@@ -33,4 +33,6 @@ public class MasterRecipeListFragment extends Fragment
 
         return inflatedView;
     }
+
+
 }

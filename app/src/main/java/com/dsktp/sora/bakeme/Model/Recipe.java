@@ -14,6 +14,9 @@ package com.dsktp.sora.bakeme.Model;
  * UDACITY ND programm.
  */
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
@@ -28,8 +31,7 @@ import java.util.ArrayList;
  * int servings representing the amount of serving's from the recipe
  * String Image representing the image of the final product created from this recipe
  */
-public class Recipe
-{
+public class Recipe implements Parcelable {
     private int id;
     private String name;
     private ArrayList<Ingredient> ingredients;
@@ -102,5 +104,47 @@ public class Recipe
 
     public void setImageURL(String imageURL) {
         this.imageURL = imageURL;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags)
+    {
+        dest.writeInt(id);
+        dest.writeString(name);
+        dest.writeList(ingredients);
+        dest.writeList(steps);
+        dest.writeInt(servings);
+        dest.writeString(imageURL);
+    }
+
+    public static final Parcelable.Creator<Recipe> CREATOR = new Parcelable.Creator<Recipe>()
+    {
+        public Recipe createFromParcel(Parcel in) {
+            return new Recipe(in);
+        }
+
+        public Recipe[] newArray(int size) {
+            return new Recipe[size];
+        }
+    };
+
+    /**
+     * This Movie constructor creates a Movie object from  a Parcel object as a parameter
+     * and read's the values for a Movie object in the same
+     * order we wrote in writeToParcel() method
+     * @param in the Parcel object that contains an Movie object
+     */
+    private Recipe(Parcel in) {
+        setId(in.readInt());
+        setName(in.readString());
+        setIngredients( in.readArrayList(null));
+        setSteps(in.readArrayList(null));
+        setServings( in.readInt());
+        setImageURL(in.readString());
     }
 }

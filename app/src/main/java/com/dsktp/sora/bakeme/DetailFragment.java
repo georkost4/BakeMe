@@ -35,6 +35,7 @@ public class DetailFragment extends Fragment
 {
     private Recipe  mRecipeClicked;
 
+    public DetailFragment(){}
     public DetailFragment(Recipe recipe) {
         mRecipeClicked = recipe;
     }
@@ -52,7 +53,17 @@ public class DetailFragment extends Fragment
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        adapter.setData(mRecipeClicked.getSteps());
+        //restore the list on screen - orientation change
+        if(savedInstanceState == null)
+        {
+            adapter.setData(mRecipeClicked.getSteps());
+        }
+        else
+        {
+            mRecipeClicked = savedInstanceState.getParcelable("recipe_list");
+            adapter.setData(mRecipeClicked.getSteps());
+        }
+
 
 
         MyIngredientsAdapter ingredientsAdapter = new MyIngredientsAdapter();
@@ -64,5 +75,12 @@ public class DetailFragment extends Fragment
         ingredientsAdapter.setData(mRecipeClicked.getIngredients());
 
         return inflatedView;
+    }
+
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable("recipe_list",mRecipeClicked);
     }
 }

@@ -32,14 +32,16 @@ public class MainScreenActivity extends AppCompatActivity implements MyRecipeAda
         setContentView(R.layout.activity_main_screen);
 
         mController = new MainScreenController(this);
-
-        mController.getRecipes();
-
-        MasterRecipeListFragment fragmentMasterView = new MasterRecipeListFragment();
-
         mManager = getSupportFragmentManager();
 
-        mManager.beginTransaction().add(R.id.fragment_placeholder_recipe_list,fragmentMasterView).commit();
+        if(savedInstanceState==null) {
+            mController.getRecipes();
+
+            MasterRecipeListFragment fragmentMasterView = new MasterRecipeListFragment();
+
+
+            mManager.beginTransaction().add(R.id.fragment_placeholder_recipe_list, fragmentMasterView).commit();
+        }
     }
 
     @Override

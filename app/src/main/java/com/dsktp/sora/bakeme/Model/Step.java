@@ -15,6 +15,9 @@ package com.dsktp.sora.bakeme.Model;
  */
 
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * This class is used to represent a Step object used by a Recipe object and
  * describes the steps that one has to follow for a recipe . It contain's the
@@ -25,8 +28,7 @@ package com.dsktp.sora.bakeme.Model;
  * String videoURL representing a url pointing to a video resource showing the step to execute
  * String thumbnailURL representing a url pointing to the video thumbnail url
  */
-public class Step
-{
+public class Step implements Parcelable {
     private int id;
     private String shortDescription;
     private String description;
@@ -87,5 +89,47 @@ public class Step
 
     public void setThumbnailURL(String thumbnailURL) {
         this.thumbnailURL = thumbnailURL;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags)
+    {
+        dest.writeInt(id);
+        dest.writeString(shortDescription);
+        dest.writeString(description);
+        dest.writeString(thumbnailURL);
+        dest.writeString(videoURL);
+
+    }
+
+
+    public static final Parcelable.Creator<Step> CREATOR = new Parcelable.Creator<Step>()
+    {
+        public Step createFromParcel(Parcel in) {
+            return new Step(in);
+        }
+
+        public Step[] newArray(int size) {
+            return new Step[size];
+        }
+    };
+
+    /**
+     * This Movie constructor creates a Movie object from  a Parcel object as a parameter
+     * and read's the values for a Movie object in the same
+     * order we wrote in writeToParcel() method
+     * @param in the Parcel object that contains an Movie object
+     */
+    private Step(Parcel in) {
+        setId(in.readInt());
+        setShortDescription(in.readString());
+        setDescription( in.readString());
+        setThumbnailURL(in.readString());
+        setVideoURL( in.readString());
     }
 }

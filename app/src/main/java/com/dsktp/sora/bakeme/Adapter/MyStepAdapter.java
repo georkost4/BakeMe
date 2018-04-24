@@ -1,14 +1,10 @@
-/*
- *
- *  * This file is subject to the terms and conditions defined in
- *  * file 'LICENSE.txt', which is part of this source code package.
- *
- */
+
 
 /*
  *
  *  * This file is subject to the terms and conditions defined in
  *  * file 'LICENSE.txt', which is part of this source code package.
+ *
  *
  */
 
@@ -26,6 +22,8 @@ import com.dsktp.sora.bakeme.R;
 
 import java.util.ArrayList;
 
+import javax.security.auth.callback.UnsupportedCallbackException;
+
 /**
  * This file created by Georgios Kostogloudis
  * and was last modified on 23/4/2018.
@@ -35,9 +33,21 @@ import java.util.ArrayList;
 public class MyStepAdapter extends RecyclerView.Adapter<MyStepAdapter.MyStepViewHolder> {
 
     private ArrayList<Step> mStepList;
+    private StepClickListener mListener;
+
+    public interface StepClickListener
+    {
+        void handleStepClickListener(Step stepClicked);
+    }
 
     public MyStepAdapter() {
         this.mStepList = new ArrayList<>();
+    }
+
+
+    public void setClickListener(StepClickListener listener)
+    {
+        mListener = listener;
     }
 
     public void setData(ArrayList<Step> list)
@@ -67,13 +77,24 @@ public class MyStepAdapter extends RecyclerView.Adapter<MyStepAdapter.MyStepView
 
 
 
-    public class MyStepViewHolder extends RecyclerView.ViewHolder {
+    public class MyStepViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private TextView mStepDescriptionTextView;
 
         public MyStepViewHolder(View itemView) {
             super(itemView);
             mStepDescriptionTextView = itemView.findViewById(R.id.tv_step_description_value);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v)
+        {
+            if(mListener!=null)
+            {
+                mListener.handleStepClickListener(mStepList.get(getAdapterPosition()));
+            }
+            else throw new UnsupportedOperationException("No callback for this method");
         }
     }
 }

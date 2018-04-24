@@ -46,6 +46,7 @@ public class DetailFragment extends Fragment
 
         MyStepAdapter adapter = new MyStepAdapter();
 
+        adapter.setClickListener((MyStepAdapter.StepClickListener) getContext());
         RecyclerView recyclerView = inflatedView.findViewById(R.id.rv_recipe_step_description);
 
         recyclerView.setAdapter(adapter);

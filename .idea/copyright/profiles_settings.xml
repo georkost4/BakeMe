@@ -1,7 +1,3 @@
 <component name="CopyrightManager">
-  <settings default="MyOwnCopyRight">
-    <module2copyright>
-      <element module="All" copyright="MyOwnCopyRight" />
-    </module2copyright>
-  </settings>
+  <settings default="this" />
 </component>

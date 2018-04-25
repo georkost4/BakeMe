@@ -51,7 +51,8 @@ public class MainScreenActivity extends AppCompatActivity implements MyRecipeAda
         mManager = getSupportFragmentManager();
         mTwoPane = getResources().getBoolean(R.bool.twoPane);
 
-        if(savedInstanceState==null) {
+        if(savedInstanceState==null)
+        {
             mController.getRecipes();
 
             MasterRecipeListFragment fragmentMasterView = new MasterRecipeListFragment();
@@ -72,12 +73,12 @@ public class MainScreenActivity extends AppCompatActivity implements MyRecipeAda
     }
 
     @Override
-    public void handleStepClickListener(Step stepClicked)
+    public void onStepClicked(Step stepClicked)
     {
         // Show recipe detail fragment
         StepDetailFragment detailFragment = new StepDetailFragment(stepClicked);
 
-        //show nav bar if  in phone mode
+        //show navigation  bar (previous/next) step  if  in phone mode to
         if(!mTwoPane)
         {
             findViewById(R.id.fragment_placeholder_nav_bar).setVisibility(View.VISIBLE);
@@ -95,4 +96,5 @@ public class MainScreenActivity extends AppCompatActivity implements MyRecipeAda
                     .commit();
         }
     }
+
 }

@@ -103,7 +103,7 @@ public class MainScreenController implements WebService {
 
     public void updateTheUi(ArrayList<Recipe> list)
     {
-        MyRecipeAdapter adapter = new MyRecipeAdapter(MainScreenActivity.getApplicationContext(),MainScreenActivity);
+        MyRecipeAdapter adapter = new MyRecipeAdapter(MainScreenActivity);
         RecyclerView recyclerView = MainScreenActivity.findViewById(R.id.rv_recipes);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(MainScreenActivity.getApplicationContext()));

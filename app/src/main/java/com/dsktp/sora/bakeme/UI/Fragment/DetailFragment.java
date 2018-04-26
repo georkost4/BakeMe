@@ -39,6 +39,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,6 +61,7 @@ import java.util.ArrayList;
 public class DetailFragment extends Fragment
 {
     private Recipe  mRecipeClicked;
+    private String DEBUG_TAG = "#" +this.getClass().getSimpleName();
 
     public DetailFragment(){}
     public DetailFragment(Recipe recipe) {
@@ -69,6 +71,7 @@ public class DetailFragment extends Fragment
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.d(DEBUG_TAG,"------------ON CREATE VIEW---------------");
         //restore the list on screen - orientation change
         if(savedInstanceState != null)
         {

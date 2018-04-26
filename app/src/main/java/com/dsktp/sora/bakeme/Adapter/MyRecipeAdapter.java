@@ -49,7 +49,7 @@ public class MyRecipeAdapter extends RecyclerView.Adapter<MyRecipeAdapter.MyReci
     }
 
     /**
-     * Contructor for this class . It set's the mListener
+     * Constructor for this class . It set's the mListener
      * field from the parameter recipeClickListener listener . So
      * we can call mListener.handleRecipeClicked method. See more inside
      * ViewHolder class
@@ -58,6 +58,7 @@ public class MyRecipeAdapter extends RecyclerView.Adapter<MyRecipeAdapter.MyReci
     public MyRecipeAdapter(recipeClickListener listener)
     {
         mListener = listener;
+        mRecipeList = new ArrayList<>();
     }
 
     /**

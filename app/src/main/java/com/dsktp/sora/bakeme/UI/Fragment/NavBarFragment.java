@@ -36,6 +36,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,9 +51,13 @@ import com.dsktp.sora.bakeme.R;
  */
 public class NavBarFragment extends Fragment
 {
+    private  final String DEBUG_TAG = "#" + this.getClass().getSimpleName();
+
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
+    {
+        Log.d(DEBUG_TAG,"------------ON CREATE VIEW---------------");
         View inflatedView = inflater.inflate(R.layout.fragment_nav_bar,container,false);
 
         return inflatedView;

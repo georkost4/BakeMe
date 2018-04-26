@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ /*
+  ~  * This file is subject to the terms and conditions defined in
+  ~  * file 'LICENSE.txt', which is part of this source code package.
+  ~  */
+  ~
+  -->
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_parent_view">
+<ListView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/widget_recipe_listview"
+     />
+
+</LinearLayout>

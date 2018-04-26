@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ /*
+  ~  * This file is subject to the terms and conditions defined in
+  ~  * file 'LICENSE.txt', which is part of this source code package.
+  ~  */
+  ~
+  -->
+
+<appwidget-provider
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:initialLayout="@layout/recipe_widget_layout"
+    android:minHeight="250dp"
+    android:minWidth="250dp"
+    android:previewImage="@mipmap/ic_launcher_round"
+    android:resizeMode="horizontal|vertical"
+    android:updatePeriodMillis="1800000"
+    android:widgetCategory="home_screen">
+
+</appwidget-provider>

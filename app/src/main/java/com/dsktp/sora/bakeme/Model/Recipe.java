@@ -14,6 +14,9 @@ package com.dsktp.sora.bakeme.Model;
  * UDACITY ND programm.
  */
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -31,13 +34,22 @@ import java.util.ArrayList;
  * int servings representing the amount of serving's from the recipe
  * String Image representing the image of the final product created from this recipe
  */
+
+@Entity(tableName = "recipes")
 public class Recipe implements Parcelable {
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo()
     private int id;
+    @ColumnInfo()
     private String name;
+    @ColumnInfo()
     private ArrayList<Ingredient> ingredients;
+    @ColumnInfo()
     private ArrayList<Step> steps;
+    @ColumnInfo()
     private int servings;
     @SerializedName("image")
+    @ColumnInfo()
     private String imageURL;
 
     /**

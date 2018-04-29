@@ -16,11 +16,11 @@
 
 package com.dsktp.sora.bakeme.UI;
 
+import android.arch.persistence.room.Room;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -31,6 +31,7 @@ import com.dsktp.sora.bakeme.Controller.MainScreenController;
 import com.dsktp.sora.bakeme.Model.Recipe;
 import com.dsktp.sora.bakeme.Model.Step;
 import com.dsktp.sora.bakeme.R;
+import com.dsktp.sora.bakeme.Repository.MyDatabase;
 import com.dsktp.sora.bakeme.UI.Fragment.RecipeListFragment;
 import com.dsktp.sora.bakeme.UI.Fragment.DetailFragment;
 import com.dsktp.sora.bakeme.UI.Fragment.NavBarFragment;
@@ -54,11 +55,27 @@ public class MainScreenActivity extends AppCompatActivity implements MyRecipeAda
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_screen);
         Log.d(DEBUG_TAG,"-------ON CREATE-----------");
-        //Get reference to the fragment manager
-        mManager = getSupportFragmentManager();
+
+        setUpVariables();
+
+
         showRecipeListFragment(savedInstanceState);
 
+
+        mController.getRecipesFromDatabase();
+
+    }
+
+    private void setUpVariables() {
+        mManager = getSupportFragmentManager();
+
         mController = MainScreenController.getController();
+
+        MyDatabase db = Room.databaseBuilder(getApplicationContext(),MyDatabase.class,"recipe.db").build();
+
+
+        mController.setDb(db);
+
 
         mTwoPane = getResources().getBoolean(R.bool.twoPane);
     }

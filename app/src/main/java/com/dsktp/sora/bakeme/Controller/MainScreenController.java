@@ -22,13 +22,18 @@
 
 package com.dsktp.sora.bakeme.Controller;
 
+import android.annotation.SuppressLint;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import com.dsktp.sora.bakeme.Adapter.MyRecipeAdapter;
 import com.dsktp.sora.bakeme.Model.Recipe;
+import com.dsktp.sora.bakeme.Repository.MyDatabase;
+import com.dsktp.sora.bakeme.Repository.RecipeDao;
 import com.dsktp.sora.bakeme.Rest.WebService;
 import com.dsktp.sora.bakeme.Utils.Constants;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,6 +55,8 @@ public class MainScreenController implements WebService {
     private MyRecipeAdapter mAdapter = null;
     private static MainScreenController instance = null;
     private ArrayList<Recipe> mRecipeList = null;
+    private RecipeDao mDao = null;
+    private MyDatabase mDb = null;
 
     private MainScreenController(){}
 
@@ -91,7 +98,16 @@ public class MainScreenController implements WebService {
                         Log.d(DEBUG_TAG,"We have the recipe list from the web service");
                         ArrayList<Recipe> recipeList = (ArrayList<Recipe>) response.body();
                         updateTheUi(recipeList);
-                        setRecipeList(recipeList);
+
+//                        setRecipeList(recipeList); //todo unnesesary statement
+
+//                        saveTheListToDatabase(recipeList);
+
+
+                        for(Recipe recipe:recipeList)
+                        {
+                            Log.d(DEBUG_TAG,"Recipe's id's:"+recipe.getId());
+                        }
 
                     }
                     else
@@ -138,5 +154,56 @@ public class MainScreenController implements WebService {
     public void setAdapter(MyRecipeAdapter adapter)
     {
       mAdapter = adapter;
+    }
+
+    private void saveTheListToDatabase(final ArrayList<Recipe> recipes)
+    {
+        if(mDb != null)
+        {
+            mDao = mDb.recipeDao();
+
+            AsyncTask anonym = new AsyncTask() {
+                @Override
+                protected Object doInBackground(Object[] objects)
+                {
+                    for(Recipe recipe : recipes)
+                    {
+                        mDao.insertAll(recipes.);
+                    }
+                    return null;
+                }
+            }.execute();
+
+        }
+    }
+
+    public ArrayList<Recipe> getRecipesFromDatabase()
+    {
+        if(mDb != null)
+        {
+            mDao = mDb.recipeDao();
+
+            final ArrayList<Recipe>[] recipes = new ArrayList[0];
+            @SuppressLint("StaticFieldLeak") AsyncTask anonym = new AsyncTask() {
+                @Override
+                protected ArrayList<Recipe> doInBackground(Object[] objects)
+                {
+                    return (ArrayList<Recipe>) mDao.getAllRecipes(); // todo also set this field variable to the updated list
+                }
+
+                @Override
+                protected void onPostExecute(Object o) {
+                    super.onPostExecute(o);
+                    mRecipeList = (ArrayList<Recipe>) o;
+                }
+            }.execute();
+
+            return getRecipeList();
+        }
+        return null;
+    }
+
+    public void setDb(MyDatabase mDb) {
+        this.mDb = mDb;
     }
 }

@@ -34,14 +34,11 @@
 package com.dsktp.sora.bakeme.UI.Fragment;
 
 import android.content.res.Configuration;
-import android.graphics.drawable.GradientDrawable;
-import android.media.MediaDataSource;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,9 +53,6 @@ import com.google.android.exoplayer2.LoadControl;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
-import com.google.android.exoplayer2.source.dash.DashChunkSource;
-import com.google.android.exoplayer2.source.dash.DashMediaSource;
-import com.google.android.exoplayer2.source.dash.DefaultDashChunkSource;
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelection;
@@ -67,7 +61,6 @@ import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
-import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
 /**
@@ -83,34 +76,44 @@ public class StepDetailFragment extends Fragment {
     private ExoPlayer mExoPlayer;
     private long mCurrentPosition = 0;
     private boolean mTwoPane = false;
+    private View mInflatedView = null;
 
     public StepDetailFragment(){}
     public StepDetailFragment(Step mStepClicked) {
         this.mStepClicked = mStepClicked;
     }
 
-
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View inflatedView = inflater.inflate(R.layout.fragment_recipe_step_detail, container, false);
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         mTwoPane = getResources().getBoolean(R.bool.twoPane);
         if(savedInstanceState!=null)
         {
             mCurrentPosition = savedInstanceState.getLong("current_pos");
             mStepClicked = savedInstanceState.getParcelable("step_clicked");
         }
-        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT && !mTwoPane) {
-            TextView fullDescriptionTextView = inflatedView.findViewById(R.id.tv_step_full_description_value);
-            fullDescriptionTextView.setText(mStepClicked.getDescription());
+
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        //TODO CHECK TO SEE IF IT RE-CREATES THE VIEW OR IS IT UNNESSESERAY CHECK
+        if(mInflatedView == null)
+        {
+            mInflatedView = inflater.inflate(R.layout.fragment_recipe_step_detail, container, false);
+
+            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT && !mTwoPane) {
+                TextView fullDescriptionTextView = mInflatedView.findViewById(R.id.tv_step_full_description_value);
+                fullDescriptionTextView.setText(mStepClicked.getDescription());
+            }
+
+            //Set up exo player
+            mPlayerView = mInflatedView.findViewById(R.id.simpleExoPlayerView);
+
+            setUpPlayer();
         }
-
-        //Set up exo player
-        mPlayerView = inflatedView.findViewById(R.id.simpleExoPlayerView);
-
-        setUpPlayer();
-
-        return inflatedView;
+        return mInflatedView;
     }
 
     private void setUpPlayer() {

@@ -16,7 +16,6 @@ import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.dsktp.sora.bakeme.Model.Recipe;
 import com.dsktp.sora.bakeme.R;
 
 /**
@@ -27,8 +26,6 @@ import com.dsktp.sora.bakeme.R;
  */
 public class WidgetUpdateService extends IntentService
 {
-
-    public static final String ACTION_UPDATE_APP_WIDGETS = "com.dsktp.sora.bakeme.widget.widgetupdateservice.update_app_widget";
     public static final String ACTION_UPDATE_LIST_VIEW = "com.dsktp.sora.bakeme.widget.widgetupdateservice.update_app_widget_list";
 
     private static String DEBUG_TAG = "#WidgetUpdateService.java";
@@ -44,12 +41,8 @@ public class WidgetUpdateService extends IntentService
         if (intent != null)
         {
             final String action = intent.getAction();
-            if (ACTION_UPDATE_APP_WIDGETS.equals(action))
-            {
-                handleActionUpdateAppWidgets();
-                Log.e(DEBUG_TAG,"-----------------handleActionUpdateAppWidgets-----------------");
-            }
-            else if(ACTION_UPDATE_LIST_VIEW.equals(action))
+
+            if(ACTION_UPDATE_LIST_VIEW.equals(action))
             {
                 handleActionUpdateListView();
                 Log.e(DEBUG_TAG,"-----------------handleActionUpdateListView-----------------");
@@ -60,7 +53,7 @@ public class WidgetUpdateService extends IntentService
 
     private void handleActionUpdateListView()
     {
-        WidgetDataModel.createSampleDataForWidget(getApplicationContext());
+        DataModel.createSampleDataForWidget(getApplicationContext());
 
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, RecipeWidgetProvider.class));
@@ -71,28 +64,13 @@ public class WidgetUpdateService extends IntentService
 
     }
 
-    private void handleActionUpdateAppWidgets() {
 
-        //You can do any task regarding this process you want to do here, then update the widget.
-
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
-        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, RecipeWidgetProvider.class));
-
-        RecipeWidgetProvider.updateAllAppWidget(this, appWidgetManager,appWidgetIds);
-    }
-
-
-    public static void startActionUpdateAppWidgets(Context context, boolean forListView) {
+    public static void startActionUpdateAppWidgets(Context context) {
         Log.e(DEBUG_TAG,"-----------------startActionUpdateAppWidgets-----------------");
         Intent intent = new Intent(context, WidgetUpdateService.class);
-        if(forListView)
-        {
-            intent.setAction(ACTION_UPDATE_LIST_VIEW);
-        }
-        else
-        {
-            intent.setAction(ACTION_UPDATE_APP_WIDGETS);
-        }
+
+        intent.setAction(ACTION_UPDATE_LIST_VIEW);
+
         context.startService(intent);
     }
 }

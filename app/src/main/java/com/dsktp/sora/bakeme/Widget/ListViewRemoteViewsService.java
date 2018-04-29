@@ -8,18 +8,14 @@
 
 package com.dsktp.sora.bakeme.Widget;
 
-import android.appwidget.AppWidgetManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
-import com.dsktp.sora.bakeme.Model.Recipe;
 import com.dsktp.sora.bakeme.R;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -28,14 +24,14 @@ import java.util.ArrayList;
  * The name of the project is BakeMe and it was created as part of
  * UDACITY ND programm.
  */
-public class ListViewWidgetService extends RemoteViewsService
+public class ListViewRemoteViewsService extends RemoteViewsService
 {
     public String DEBUG_TAG = "#" + this.getClass().getSimpleName();
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent)
     {
         Log.e(DEBUG_TAG,"-----------Creating new AppWidgetListView object--------");
-        return new AppWidgetListView (this.getApplicationContext(), WidgetDataModel.getDataFromSharedPrefs(getApplicationContext()));
+        return new AppWidgetListView (this.getApplicationContext(), DataModel.getDataFromSharedPrefs(getApplicationContext()));
     }
 }
 
@@ -44,8 +40,8 @@ class AppWidgetListView implements RemoteViewsService.RemoteViewsFactory
     private  final String DEBUG_TAG = "#" + this.getClass().getSimpleName();
     private Context mContext;
    // private ArrayList<Recipe> mRecipesList; // todo uncomment this
-    private ArrayList<WidgetDataModel> mRecipesList;
-    public AppWidgetListView(Context applicationContext, ArrayList<WidgetDataModel> dataList)
+    private ArrayList<DataModel> mRecipesList;
+    public AppWidgetListView(Context applicationContext, ArrayList<DataModel> dataList)
     {
         mContext = applicationContext;
         mRecipesList = dataList;
@@ -68,7 +64,9 @@ class AppWidgetListView implements RemoteViewsService.RemoteViewsFactory
     }
 
     @Override
-    public int getCount() {
+    public int getCount()
+    {
+        Log.e(DEBUG_TAG,"RecipeList count = " + mRecipesList.size());
         return mRecipesList.size();
     }
 
@@ -80,6 +78,8 @@ class AppWidgetListView implements RemoteViewsService.RemoteViewsFactory
 
 //        views.setTextViewText(R.id.titleTextView, mRecipesList.get(position).getName()); // TODO CHANGE TO THIS
         views.setTextViewText(R.id.widget_ingredient_row_textview, mRecipesList.get(position).ingredientName);
+
+        Log.e(DEBUG_TAG,mRecipesList.get(position).ingredientName);
 
         //fill the pending intent with data
         Intent fillInIntent = new Intent();
@@ -97,7 +97,7 @@ class AppWidgetListView implements RemoteViewsService.RemoteViewsFactory
 
     @Override
     public int getViewTypeCount() {
-        return 0;
+        return 1;
     }
 
     @Override

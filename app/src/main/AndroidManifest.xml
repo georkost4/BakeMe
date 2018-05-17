@@ -1,15 +1,13 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ /*
   ~  * This file is subject to the terms and conditions defined in
   ~  * file 'LICENSE.txt', which is part of this source code package.
   ~  */
-  -->
-
+-->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.dsktp.sora.bakeme">
 
-    <uses-permission android:name="android.permission.INTERNET"> </uses-permission>
+    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
 
     <application
         android:allowBackup="true"
@@ -28,29 +26,36 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".Widget.WidgetUpdateService"
+        <service
+            android:name=".Widget.WidgetUpdateService"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.dsktp.sora.bakeme.widget.widgetupdateservice.update_app_widget"/>
-                <action android:name="com.dsktp.sora.bakeme.widget.widgetupdateservice.update_app_widget_list"/>
+                <action android:name="com.dsktp.sora.bakeme.widget.widgetupdateservice.update_app_widget" />
+                <action android:name="com.dsktp.sora.bakeme.widget.widgetupdateservice.update_app_widget_list" />
             </intent-filter>
         </service>
-
         <service
             android:name=".Widget.ListViewRemoteViewsService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
         <receiver android:name=".Widget.RecipeWidgetProvider">
-                        <intent-filter>
-                            <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                        </intent-filter>
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
 
-                        <meta-data
-                            android:name="android.appwidget.provider"
-                            android:resource="@xml/recipe_widget_info" />
-                    </receiver>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/recipe_widget_info" />
+        </receiver>
 
-
+        <activity
+            android:name=".UI.widgetConfigurationActivity"
+            android:label="@string/title_activity_widget_configuration"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

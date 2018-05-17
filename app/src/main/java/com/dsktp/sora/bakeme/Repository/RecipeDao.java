@@ -31,11 +31,19 @@ public interface RecipeDao
     @Query("SELECT * FROM recipes")
     List<Recipe> getAllRecipes();
 
+    @Query("SELECT * FROM recipes WHERE id = :recipeId")
+    Recipe getRecipeById(int recipeId);
 
 
     @Insert
-    void insertAll(Recipe... recipes);
+    void insertAllRecipes(ArrayList<Recipe> recipes);
+
+    @Insert
+    void insertRecipe(Recipe recipe);
 
     @Delete
     void delete(Recipe recipe);
+
+    @Query("SELECT id from recipes limit 2")
+    int checkIfEmpty();
 }

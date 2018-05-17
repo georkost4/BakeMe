@@ -8,8 +8,6 @@
 
 package com.dsktp.sora.bakeme.UI.Fragment;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,7 +19,10 @@ import android.view.ViewGroup;
 
 import com.dsktp.sora.bakeme.Adapter.MyRecipeAdapter;
 import com.dsktp.sora.bakeme.Controller.MainScreenController;
+import com.dsktp.sora.bakeme.Model.Recipe;
 import com.dsktp.sora.bakeme.R;
+
+import java.util.ArrayList;
 
 
 public class RecipeListFragment extends Fragment {
@@ -31,6 +32,8 @@ public class RecipeListFragment extends Fragment {
     private RecyclerView mRecipeListRV;
     private String DEBUG_TAG = "#" + this.getClass().getSimpleName();
     private View inflatedView = null;
+    private ArrayList<Recipe> mRecipeList;
+    private MainScreenController mController = MainScreenController.getController();
 
     public RecipeListFragment() {
         // Required empty public constructor
@@ -61,8 +64,11 @@ public class RecipeListFragment extends Fragment {
         mRecipeListRV.setLayoutManager(new LinearLayoutManager(getContext()));
         //set the adapter to the controller
         //to update the UI
-        MainScreenController.getController().setAdapter(mAdapter);
-        MainScreenController.getController().getRecipes();
+        mController.setAdapter(mAdapter);
+        //get the recipe list form repository
+        mRecipeList = mController.fetchRecipes(); //todo fix this statement
+        //update the UI
+        mController.updateTheUi(mRecipeList);
     }
 
 }

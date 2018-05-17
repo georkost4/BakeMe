@@ -16,7 +16,8 @@
 
 package com.dsktp.sora.bakeme.UI;
 
-import android.arch.persistence.room.Room;
+import android.content.Intent;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -32,6 +33,7 @@ import com.dsktp.sora.bakeme.Model.Recipe;
 import com.dsktp.sora.bakeme.Model.Step;
 import com.dsktp.sora.bakeme.R;
 import com.dsktp.sora.bakeme.Repository.MyDatabase;
+import com.dsktp.sora.bakeme.Repository.LocalRepository;
 import com.dsktp.sora.bakeme.UI.Fragment.RecipeListFragment;
 import com.dsktp.sora.bakeme.UI.Fragment.DetailFragment;
 import com.dsktp.sora.bakeme.UI.Fragment.NavBarFragment;
@@ -48,6 +50,20 @@ public class MainScreenActivity extends AppCompatActivity implements MyRecipeAda
     private MyRecipeAdapter mAdapter;
     private RecyclerView mRecipeListRV;
     private final String DEBUG_TAG = "#" + getClass().getSimpleName();
+    private LocalRepository mLocalRepository;
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        Log.d(DEBUG_TAG,"----------ON RESUME--------------");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d(DEBUG_TAG,"-----------ON START-------------");
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -56,13 +72,36 @@ public class MainScreenActivity extends AppCompatActivity implements MyRecipeAda
         setContentView(R.layout.activity_main_screen);
         Log.d(DEBUG_TAG,"-------ON CREATE-----------");
 
+        Intent widgetClickIntent = getIntent();
+
         setUpVariables();
 
 
-        showRecipeListFragment(savedInstanceState);
+        Log.d(DEBUG_TAG,"Widget intent is not null");
+        String action = widgetClickIntent.getAction();
+        if(action.equals("SHOW_RECIPE_DETAILS"))
+        {
+            //get the recipe the user clicked from widget config activity
+            int recipeIDclicked = PreferenceManager.getDefaultSharedPreferences(this).getInt("widget_chosen_recipe_id",-1);
+            mLocalRepository.getRecipeById(recipeIDclicked);
 
 
-        mController.getRecipesFromDatabase();
+            //Make this fragment transaction to create the proper back stack for the widget
+            RecipeListFragment recipeListFragment = new RecipeListFragment(); //TODO RECONSIDER RE-ALLOCATING NEW OBJECT
+            mManager.beginTransaction()
+                    .replace(R.id.fragment_placeholder_recipe_list,recipeListFragment)
+                    .commit();
+
+            Log.d(DEBUG_TAG,"Handling the user clicked on recipe");
+            ArrayList<Recipe> recipes = mController.fetchRecipes();
+            if(recipes==null) Log.e(DEBUG_TAG,"recipes list are empty");
+            handleRecipeClicked(recipeIDclicked,recipes);
+        }
+        else
+        {
+            Log.d(DEBUG_TAG,"Starting the activity the normal way");
+            showRecipeListFragment(savedInstanceState);
+        }
 
     }
 
@@ -71,10 +110,14 @@ public class MainScreenActivity extends AppCompatActivity implements MyRecipeAda
 
         mController = MainScreenController.getController();
 
-        MyDatabase db = Room.databaseBuilder(getApplicationContext(),MyDatabase.class,"recipe.db").build();
+        MyDatabase db = LocalRepository.getInstance(this);
+
+        mLocalRepository = new LocalRepository();
 
 
-        mController.setDb(db);
+        mController.setLocalRepo(mLocalRepository);
+
+        mController.fetchRecipes();
 
 
         mTwoPane = getResources().getBoolean(R.bool.twoPane);

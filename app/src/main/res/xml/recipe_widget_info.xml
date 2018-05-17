@@ -15,6 +15,7 @@
     android:previewImage="@mipmap/ic_launcher_round"
     android:resizeMode="horizontal|vertical"
     android:updatePeriodMillis="1800000"
+    android:configure="com.dsktp.sora.bakeme.UI.widgetConfigurationActivity"
     android:widgetCategory="home_screen">
 
 </appwidget-provider>

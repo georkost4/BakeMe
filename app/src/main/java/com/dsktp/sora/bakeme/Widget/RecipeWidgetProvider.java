@@ -49,6 +49,10 @@ public class RecipeWidgetProvider extends AppWidgetProvider
 
         //Handle click on the listView
         Intent appIntent = new Intent(context, MainScreenActivity.class);
+
+        appIntent.setAction("SHOW_RECIPE_DETAILS");
+
+
         PendingIntent appPendingIntent = PendingIntent.getActivity(context, 0, appIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         views.setPendingIntentTemplate(R.id.widget_recipe_listview, appPendingIntent);
 

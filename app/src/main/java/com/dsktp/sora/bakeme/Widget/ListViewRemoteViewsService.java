@@ -14,6 +14,8 @@ import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
+import com.dsktp.sora.bakeme.Model.Ingredient;
+import com.dsktp.sora.bakeme.Model.Recipe;
 import com.dsktp.sora.bakeme.R;
 
 import java.util.ArrayList;
@@ -31,7 +33,7 @@ public class ListViewRemoteViewsService extends RemoteViewsService
     public RemoteViewsFactory onGetViewFactory(Intent intent)
     {
         Log.e(DEBUG_TAG,"-----------Creating new AppWidgetListView object--------");
-        return new AppWidgetListView (this.getApplicationContext(), DataModel.getDataFromSharedPrefs(getApplicationContext()));
+        return new AppWidgetListView (this.getApplicationContext(), DataModel.getDataFromDatabase(getApplicationContext()));
     }
 }
 
@@ -40,11 +42,13 @@ class AppWidgetListView implements RemoteViewsService.RemoteViewsFactory
     private  final String DEBUG_TAG = "#" + this.getClass().getSimpleName();
     private Context mContext;
    // private ArrayList<Recipe> mRecipesList; // todo uncomment this
-    private ArrayList<DataModel> mRecipesList;
-    public AppWidgetListView(Context applicationContext, ArrayList<DataModel> dataList)
+    private ArrayList<Ingredient> mIngredientList;
+
+
+    public AppWidgetListView(Context applicationContext, ArrayList<Ingredient> dataList)
     {
         mContext = applicationContext;
-        mRecipesList = dataList;
+        mIngredientList = dataList;
         Log.e(DEBUG_TAG,"-----------------updateAppWidget inside Contructor-----------------");
     }
 
@@ -66,8 +70,8 @@ class AppWidgetListView implements RemoteViewsService.RemoteViewsFactory
     @Override
     public int getCount()
     {
-        Log.e(DEBUG_TAG,"RecipeList count = " + mRecipesList.size());
-        return mRecipesList.size();
+        Log.e(DEBUG_TAG,"RecipeList count = " + mIngredientList.size());
+        return mIngredientList.size();
     }
 
     @Override
@@ -76,16 +80,18 @@ class AppWidgetListView implements RemoteViewsService.RemoteViewsFactory
         Log.e(DEBUG_TAG,"getViewAt is called....");
         RemoteViews views = new RemoteViews(mContext.getPackageName(), R.layout.widget_ingredient_row);
 
-//        views.setTextViewText(R.id.titleTextView, mRecipesList.get(position).getName()); // TODO CHANGE TO THIS
-        views.setTextViewText(R.id.widget_ingredient_row_textview, mRecipesList.get(position).ingredientName);
+        views.setTextViewText(R.id.widget_ingredient_row_ingredient_name, mIngredientList.get(position).getIngredient());
+        String quantityMeasuere = mIngredientList.get(position).getQuantity() + " " + mIngredientList.get(position).getMeasure();
+        views.setTextViewText(R.id.widget_ingredient_row_ingredient_detail,quantityMeasuere);
 
-        Log.e(DEBUG_TAG,mRecipesList.get(position).ingredientName);
 
         //fill the pending intent with data
         Intent fillInIntent = new Intent();
-//        fillInIntent.putExtra("ItemTitle",mRecipesList.get(position).getName()); // todo change to this
-        fillInIntent.putExtra("ItemTitle",mRecipesList.get(position).ingredientName);
-        views.setOnClickFillInIntent(R.id.widget_ingredient_row_textview, fillInIntent);
+
+        fillInIntent.setAction("SHOW_RECIPE_DETAILS");
+
+
+        views.setOnClickFillInIntent(R.id.widget_ingredient_row_ingredient_name, fillInIntent);
 
         return views;
     }

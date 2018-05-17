@@ -8,8 +8,17 @@
 
 package com.dsktp.sora.bakeme.Widget;
 
+import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import android.util.Log;
+
+import com.dsktp.sora.bakeme.Controller.MainScreenController;
+import com.dsktp.sora.bakeme.Model.Ingredient;
+import com.dsktp.sora.bakeme.Model.Recipe;
+import com.dsktp.sora.bakeme.Repository.MyDatabase;
+import com.dsktp.sora.bakeme.Repository.LocalRepository;
 
 import java.util.ArrayList;
 
@@ -25,31 +34,37 @@ public class DataModel
     public String ingredientName = "";
 
 
-    public static void createSampleDataForWidget(Context context) {
-        SharedPreferences sharedPref = context.getSharedPreferences("SharedPrefs", Context.MODE_PRIVATE);
+    public static ArrayList<Ingredient> getDataFromDatabase(Context context)
+    {
+        ArrayList<Recipe> list = null;
 
+        MainScreenController controller = MainScreenController.getController();
+        MyDatabase db = LocalRepository.getInstance(context);
 
-        sharedPref.edit().putString("title","Cake").apply(); //todo change "title" to ingredient-Name
-        sharedPref.edit().putString("title1","Muffin").apply(); //todo change "title" to ingredient-Name
+        int recipeChosen = userRecipePreference(context);
 
-    }
-
-    public static ArrayList<DataModel> getDataFromSharedPrefs(Context context) {
-        ArrayList<DataModel> list=new ArrayList<>();
-        if(list.isEmpty())
+        if(db!=null)
         {
-            SharedPreferences sharedPref = context.getSharedPreferences("SharedPrefs", Context.MODE_PRIVATE);
-
-            DataModel model = new DataModel();
-            DataModel model1 = new DataModel();
-            model.ingredientName = sharedPref.getString("title","nope");
-            model1.ingredientName = sharedPref.getString("title1","nope");
-
-            list.add(model);
-            list.add(model1);
+            list = controller.fetchRecipes();
+        }
+        else
+        {
+            db = Room.databaseBuilder(context,MyDatabase.class,"recipe.db").build();
+            list = (ArrayList<Recipe>) db.recipeDao().getAllRecipes();
 
         }
-        return list;
+        return list.get(recipeChosen).getIngredients();
+    }
+
+
+
+    public static int userRecipePreference(Context context)
+    {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+
+        int userPrefRecipeId =  sharedPreferences.getInt("widget_chosen_recipe_id",0);
+        Log.d("DEBUG","/////////////----------RETURNING ID === " + userPrefRecipeId + "-------///////");
+        return  userPrefRecipeId;
     }
 
 }

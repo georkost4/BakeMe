@@ -53,7 +53,6 @@ public class WidgetUpdateService extends IntentService
 
     private void handleActionUpdateListView()
     {
-        DataModel.createSampleDataForWidget(getApplicationContext());
 
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, RecipeWidgetProvider.class));

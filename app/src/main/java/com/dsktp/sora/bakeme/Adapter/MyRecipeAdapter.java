@@ -96,7 +96,7 @@ public class MyRecipeAdapter extends RecyclerView.Adapter<MyRecipeAdapter.MyReci
         if(currentRecipe.getImageURL().equals(""))
         {
            //load default placeholder
-           holder.mRecipeImageImageView.setImageResource(R.drawable.ic_launcher_background);
+           holder.mRecipeImageImageView.setImageResource(R.drawable.ic_launcher_background); // todo change the placeHolder image
         }
         else
         {
@@ -108,6 +108,7 @@ public class MyRecipeAdapter extends RecyclerView.Adapter<MyRecipeAdapter.MyReci
         }
 
     }
+
 
     @Override
     public int getItemCount() {

@@ -93,6 +93,10 @@ public class MyStepAdapter extends RecyclerView.Adapter<MyStepAdapter.MyStepView
         holder.mStepDescriptionTextView.setText(currentStep.getShortDescription()); // set The value
     }
 
+    /**
+     * Getter item for returning the items of the list
+     * @return The item count of the mStepList field
+     */
     @Override
     public int getItemCount() {
         if(mStepList.isEmpty()) return 0;

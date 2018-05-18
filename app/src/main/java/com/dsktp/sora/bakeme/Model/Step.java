@@ -120,10 +120,10 @@ public class Step implements Parcelable {
     };
 
     /**
-     * This Movie constructor creates a Movie object from  a Parcel object as a parameter
-     * and read's the values for a Movie object in the same
+     * This Movie constructor creates a Step object from  a Parcel object as a parameter
+     * and read's the values for a Step object in the same
      * order we wrote in writeToParcel() method
-     * @param in the Parcel object that contains an Movie object
+     * @param in the Parcel object that contains an Step object
      */
     private Step(Parcel in) {
         setId(in.readInt());

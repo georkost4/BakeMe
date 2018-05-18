@@ -146,10 +146,10 @@ public class Recipe implements Parcelable {
     };
 
     /**
-     * This Movie constructor creates a Movie object from  a Parcel object as a parameter
-     * and read's the values for a Movie object in the same
+     * This Recipe constructor creates a Recipe object from  a Parcel object as a parameter
+     * and read's the values for a Reco[e object in the same
      * order we wrote in writeToParcel() method
-     * @param in the Parcel object that contains an Movie object
+     * @param in the Parcel object that contains an Recipe object
      */
     private Recipe(Parcel in) {
         setId(in.readInt());

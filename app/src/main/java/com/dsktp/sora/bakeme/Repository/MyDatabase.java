@@ -23,6 +23,10 @@ import com.dsktp.sora.bakeme.Utils.Converter;
  * The name of the project is BakeMe and it was created as part of
  * UDACITY ND programm.
  */
+
+/**
+ * This class describes the Room Database
+ */
 @Database(entities = {Recipe.class},version = 1,exportSchema = false)
 @TypeConverters({Converter.class})
 public abstract class MyDatabase  extends RoomDatabase

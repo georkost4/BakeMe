@@ -25,6 +25,10 @@ import java.util.List;
  * UDACITY ND programm.
  */
 
+
+/**
+ * This interface describe's the methods to interacting with the Room database
+ */
 @Dao
 public interface RecipeDao
 {

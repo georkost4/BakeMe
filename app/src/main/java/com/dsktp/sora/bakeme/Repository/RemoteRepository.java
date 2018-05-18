@@ -30,6 +30,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * The name of the project is BakeMe and it was created as part of
  * UDACITY ND programm.
  */
+
+/**
+ * This class contains helper method for fetching data from the web.
+ */
 public class RemoteRepository implements WebService
 {
 
@@ -37,13 +41,18 @@ public class RemoteRepository implements WebService
     private MainScreenController mController = null;
 
 
-
+    /**
+     * Constructor
+     * @param mainScreenController The MainScreenController object
+     */
     public RemoteRepository(MainScreenController mainScreenController)
     {
 
        mController = mainScreenController;
     }
 
+
+    //todo to be implemented
     @Override
     public Call<List<Recipe>> getRecipes() {
 

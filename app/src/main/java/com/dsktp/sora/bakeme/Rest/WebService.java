@@ -32,7 +32,9 @@ import retrofit2.http.GET;
  * UDACITY ND programm.
  */
 
-
+/**
+ * Interface describing the method for getting the data from web
+ */
 public interface WebService
 {
     @GET("baking.json")

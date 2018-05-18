@@ -42,6 +42,10 @@ import com.dsktp.sora.bakeme.UI.Fragment.StepDetailFragment;
 import java.util.ArrayList;
 
 
+/**
+ * This class is the activity hosting the rest of the fragment classes . It handles the user interaction to the fragments
+ * with the help of MainScreenController
+ */
 public class MainScreenActivity extends AppCompatActivity implements MyRecipeAdapter.recipeClickListener,MyStepAdapter.StepClickListener {
 
     private MainScreenController mController;
@@ -72,15 +76,16 @@ public class MainScreenActivity extends AppCompatActivity implements MyRecipeAda
         setContentView(R.layout.activity_main_screen);
         Log.d(DEBUG_TAG,"-------ON CREATE-----------");
 
-        Intent widgetClickIntent = getIntent();
+        Intent widgetClickIntent = getIntent(); // get the intent from the widget
 
-        setUpVariables();
+        setUpVariables(); // set up the variable's
 
 
-        Log.d(DEBUG_TAG,"Widget intent is not null");
-        String action = widgetClickIntent.getAction();
-        if(action.equals("SHOW_RECIPE_DETAILS"))
+
+        String action = widgetClickIntent.getAction(); //get the action from the intent
+        if(action.equals("SHOW_RECIPE_DETAILS")) // todo extract string
         {
+            Log.d(DEBUG_TAG,"Handling the user clicked on recipe");
             //get the recipe the user clicked from widget config activity
             int recipeIDclicked = PreferenceManager.getDefaultSharedPreferences(this).getInt("widget_chosen_recipe_id",-1);
             mLocalRepository.getRecipeById(recipeIDclicked);
@@ -92,34 +97,41 @@ public class MainScreenActivity extends AppCompatActivity implements MyRecipeAda
                     .replace(R.id.fragment_placeholder_recipe_list,recipeListFragment)
                     .commit();
 
-            Log.d(DEBUG_TAG,"Handling the user clicked on recipe");
+
             ArrayList<Recipe> recipes = mController.fetchRecipes();
-            if(recipes==null) Log.e(DEBUG_TAG,"recipes list are empty");
+            if(recipes==null) Log.e(DEBUG_TAG,"recipes list are empty"); // todo remove this
+            //mock the recipe clicked event
             handleRecipeClicked(recipeIDclicked,recipes);
         }
         else
         {
             Log.d(DEBUG_TAG,"Starting the activity the normal way");
+            //the activity started normally not from the widget
+            //show the recipe list fragment
             showRecipeListFragment(savedInstanceState);
         }
 
     }
 
-    private void setUpVariables() {
+    /**
+     * This method set's up some eseential variables we will
+     * need later.
+     */
+    private void setUpVariables()
+    {
+        //get the fragment manager to make transaction with fragments
         mManager = getSupportFragmentManager();
-
+        //instantiate the controller
         mController = MainScreenController.getController();
+        //create the database
+        LocalRepository.getRoomDatabase(this);
 
-        MyDatabase db = LocalRepository.getInstance(this);
+//        //get the local repository
+//        mLocalRepository = LocalRepository.getLocalRepository(); //todo TO BE REMOVED UNNECESSARY
+//        //set the local repo to the controller
+//        mController.setLocalRepo(mLocalRepository);
 
-        mLocalRepository = new LocalRepository();
-
-
-        mController.setLocalRepo(mLocalRepository);
-
-        mController.fetchRecipes();
-
-
+        //get this variable so we can know if we are in tablet mode or phone mode
         mTwoPane = getResources().getBoolean(R.bool.twoPane);
     }
 
@@ -130,8 +142,7 @@ public class MainScreenActivity extends AppCompatActivity implements MyRecipeAda
      */
     private void showRecipeListFragment(Bundle savedInstanceState)
     {
-        //We have saved the number of fragment's that are in the backStack inside
-        //this bundle
+        //We have saved the number of fragment's that are in the backStack inside this bundle
         if(savedInstanceState!=null)
         {
             int number = savedInstanceState.getInt("fragments_number");
@@ -223,6 +234,6 @@ public class MainScreenActivity extends AppCompatActivity implements MyRecipeAda
         //Get the number of the fragment's who are in the backStack
         int numberOfFragments = mManager.getBackStackEntryCount();
         //put the number to the savedInstance bundle
-        outState.putInt("fragments_number",numberOfFragments);
+        outState.putInt("fragments_number",numberOfFragments); // todo extract string resource
     }
 }

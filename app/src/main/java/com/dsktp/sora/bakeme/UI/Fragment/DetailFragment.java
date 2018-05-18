@@ -49,14 +49,16 @@ import com.dsktp.sora.bakeme.Adapter.MyStepAdapter;
 import com.dsktp.sora.bakeme.Model.Recipe;
 import com.dsktp.sora.bakeme.R;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-
 /**
  * This file created by Georgios Kostogloudis
  * and was last modified on 23/4/2018.
  * The name of the project is BakeMe and it was created as part of
  * UDACITY ND programm.
+ */
+
+/**
+ * Class for inflating a Fragment , specifically a Detail Fragment containing a RecycleView of ingredients
+ * from selected Recipe and a RecyclerView with the the steps of execution for this recipe.
  */
 public class DetailFragment extends Fragment
 {
@@ -64,7 +66,10 @@ public class DetailFragment extends Fragment
     private String DEBUG_TAG = "#" +this.getClass().getSimpleName();
 
     public DetailFragment(){}
-    public DetailFragment(Recipe recipe) {
+
+
+    public DetailFragment(Recipe recipe)
+    {
         mRecipeClicked = recipe;
     }
 
@@ -75,33 +80,23 @@ public class DetailFragment extends Fragment
         //restore the list on screen - orientation change
         if(savedInstanceState != null)
         {
-            mRecipeClicked = savedInstanceState.getParcelable("recipe_list");
+            //retrieve the clicked recipe from the bundle
+            mRecipeClicked = savedInstanceState.getParcelable("recipe_list"); //todo extract resource
         }
 
+        //inflate the layout
         View inflatedView = inflater.inflate(R.layout.fragment_recipe_step_list,container,false);
 
-        MyStepAdapter adapter = new MyStepAdapter();
+        //set up step rv
+        setUpStepRecyclerView(inflatedView);
+        //set up ingredients rv
+        setUpIngredientsRecyclerView(inflatedView);
 
-        adapter.setClickListener((MyStepAdapter.StepClickListener) getContext());
-        RecyclerView recyclerView = inflatedView.findViewById(R.id.rv_recipe_step_description);
-
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-        adapter.setData(mRecipeClicked.getSteps());
-
-
-        MyIngredientsAdapter ingredientsAdapter = new MyIngredientsAdapter();
-
-        RecyclerView rvIngredients = inflatedView.findViewById(R.id.rv_ingredients_list);
-        rvIngredients.setAdapter(ingredientsAdapter);
-        rvIngredients.setLayoutManager(new GridLayoutManager(inflatedView.getContext(),2));
-
-        ingredientsAdapter.setData(mRecipeClicked.getIngredients());
-
+        //check to see if we are in tablet mode
         boolean twoPane = getResources().getBoolean(R.bool.twoPane);
         if(twoPane)
         {
+            //we are in tablet mode so add the step detail fragment to the RIGHT portion of the screen
             FragmentTransaction ft = getChildFragmentManager().beginTransaction();
             StepDetailFragment fragment = new StepDetailFragment(mRecipeClicked.getSteps().get(0));
             ft.add(R.id.right_part_placeholder,fragment).commit();
@@ -110,10 +105,42 @@ public class DetailFragment extends Fragment
         return inflatedView;
     }
 
+    /**
+     * This method sets up the RecyclerView showing the Ingedients of the recipe selected
+     */
+    private void setUpIngredientsRecyclerView(View inflatedView) {
+        //create the ingredients adapter
+        //get a reference to the rv
+        //set the adapter to the rv
+        MyIngredientsAdapter ingredientsAdapter = new MyIngredientsAdapter();
+        RecyclerView rvIngredients = inflatedView.findViewById(R.id.rv_ingredients_list);
+        rvIngredients.setAdapter(ingredientsAdapter);
+        rvIngredients.setLayoutManager(new GridLayoutManager(inflatedView.getContext(),2)); // use gridlayout to display the ingredients of a list as a grid
+        ingredientsAdapter.setData(mRecipeClicked.getIngredients());
+    }
+
+    /**
+     * This method sets up the RecyclerView showing the Step of the recipe selected
+     */
+    private void setUpStepRecyclerView(View inflatedView) {
+        //create a adapter for the Step RecyclerView
+        MyStepAdapter stepAdapter = new MyStepAdapter();
+        // set the click listener to
+        stepAdapter.setClickListener((MyStepAdapter.StepClickListener) getContext());
+        //get a reference to the step RecyclerView
+        RecyclerView stepRecyclerView = inflatedView.findViewById(R.id.rv_recipe_step_description);
+        //set the adapter to the recyclerview
+        stepRecyclerView.setAdapter(stepAdapter);
+        //set the layout manager to the rv
+        stepRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        stepAdapter.setData(mRecipeClicked.getSteps()); // set the data to the adapter to update the UI
+    }
+
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable("recipe_list",mRecipeClicked);
+        //save the recipe clicked to the bundle
+        outState.putParcelable("recipe_list",mRecipeClicked); // todo extract string resource
     }
 }

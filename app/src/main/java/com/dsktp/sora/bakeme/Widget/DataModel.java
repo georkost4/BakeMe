@@ -39,7 +39,7 @@ public class DataModel
         ArrayList<Recipe> list = null;
 
         MainScreenController controller = MainScreenController.getController();
-        MyDatabase db = LocalRepository.getInstance(context);
+        MyDatabase db = LocalRepository.getRoomDatabase(context);
 
         int recipeChosen = userRecipePreference(context);
 

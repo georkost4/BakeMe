@@ -25,6 +25,10 @@ import com.dsktp.sora.bakeme.R;
 import java.util.ArrayList;
 
 
+/**
+ * Class for inflating a Fragment , specifically a Recipe List Fragment containing a RecycleView of the
+ * Recipes from the network
+ */
 public class RecipeListFragment extends Fragment {
 
 
@@ -35,9 +39,10 @@ public class RecipeListFragment extends Fragment {
     private ArrayList<Recipe> mRecipeList;
     private MainScreenController mController = MainScreenController.getController();
 
-    public RecipeListFragment() {
+    public RecipeListFragment()
+    {
         // Required empty public constructor
-        }
+    }
 
 
     @Override
@@ -51,11 +56,13 @@ public class RecipeListFragment extends Fragment {
             setUpRecyclerView(inflatedView);
         }
 
-
         return inflatedView;
     }
 
-
+    /**
+     * Method for setting up the RecyclerView ocntaining the Recipe list
+     * @param inflatedView
+     */
     private void setUpRecyclerView(View inflatedView)
     {
         mAdapter = new MyRecipeAdapter((MyRecipeAdapter.recipeClickListener) getContext());
@@ -67,8 +74,13 @@ public class RecipeListFragment extends Fragment {
         mController.setAdapter(mAdapter);
         //get the recipe list form repository
         mRecipeList = mController.fetchRecipes(); //todo fix this statement
-        //update the UI
-        mController.updateTheUi(mRecipeList);
+        //the mRecipeList will be null if we don't have a cached list
+        if(mRecipeList!=null)
+        {
+            Log.e(DEBUG_TAG, "------------RECIPE LIST IS NULL-----------");
+            //update the UI
+            mController.updateTheUi(mRecipeList);
+        }
     }
 
 }

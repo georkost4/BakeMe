@@ -32,6 +32,7 @@ public class LocalRepository  {
 
     private static final String DEBUG_TAG = "#LocalRepository.java";
     private static MyDatabase mDb = null;
+    private static LocalRepository instance = null;
 
     /**
      * Default private constructor
@@ -45,7 +46,7 @@ public class LocalRepository  {
      * @param context The context to create the database
      * @return a object of this class
      */
-    public static MyDatabase getInstance(Context context)
+    public static MyDatabase getRoomDatabase(Context context)
     {
         if (mDb == null)
         {
@@ -59,10 +60,16 @@ public class LocalRepository  {
      * to ensure we have only one Database object across the application
      * @return a object of this class
      */
-    public static MyDatabase getInstance()
+    public static MyDatabase getRoomDatabase()
     {
         if (mDb != null) return mDb;
         return null;
+    }
+
+    public static LocalRepository getLocalRepository()
+    {
+        if(instance==null) return new LocalRepository();
+        else return instance;
     }
 
 

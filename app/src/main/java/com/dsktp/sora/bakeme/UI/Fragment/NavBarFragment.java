@@ -30,6 +30,14 @@
  *
  */
 
+/*
+ *
+ *  * This file is subject to the terms and conditions defined in
+ *  * file 'LICENSE.txt', which is part of this source code package.
+ *
+ *
+ */
+
 package com.dsktp.sora.bakeme.UI.Fragment;
 
 import android.os.Bundle;
@@ -49,6 +57,11 @@ import com.dsktp.sora.bakeme.R;
  * The name of the project is BakeMe and it was created as part of
  * UDACITY ND programm.
  */
+
+/**
+ * This class creates a Fragment , spesifically the fragment containing the navigation bar to change the step you are in from
+ * the selected recipe.
+ */
 public class NavBarFragment extends Fragment
 {
     private  final String DEBUG_TAG = "#" + this.getClass().getSimpleName();
@@ -58,6 +71,7 @@ public class NavBarFragment extends Fragment
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
         Log.d(DEBUG_TAG,"------------ON CREATE VIEW---------------");
+        //inflate the view
         View inflatedView = inflater.inflate(R.layout.fragment_nav_bar,container,false);
 
         return inflatedView;

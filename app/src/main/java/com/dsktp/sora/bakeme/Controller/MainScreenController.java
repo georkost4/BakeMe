@@ -65,7 +65,7 @@ public class MainScreenController {
     private MainScreenController()
     {
         //instantiate the repo object's
-        mLocalRepo = new LocalRepository();
+        mLocalRepo = LocalRepository.getLocalRepository();
         mRemoteRepo = new RemoteRepository(this);//todo maybe unnesesary instatiation
     }
 

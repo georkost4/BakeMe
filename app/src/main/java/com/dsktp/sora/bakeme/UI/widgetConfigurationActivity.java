@@ -11,7 +11,6 @@ package com.dsktp.sora.bakeme.UI;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -25,7 +24,6 @@ import android.widget.Toast;
 
 import com.dsktp.sora.bakeme.Model.Recipe;
 import com.dsktp.sora.bakeme.R;
-import com.dsktp.sora.bakeme.Repository.MyDatabase;
 import com.dsktp.sora.bakeme.Repository.LocalRepository;
 
 import java.util.ArrayList;
@@ -48,6 +46,7 @@ public class widgetConfigurationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_widget_configuration);
 
         showTheAvailableRecipes();
+
         Intent intentFromWidget = getIntent();
         if(intentFromWidget!=null)
         {
@@ -59,16 +58,14 @@ public class widgetConfigurationActivity extends AppCompatActivity {
 
             appWidgetManager.updateAppWidget(mWidgetId, views);
 
-
-
-
         }
 
     }
 
     private void showTheAvailableRecipes()
     {
-        getRecipeFromDb();
+        ArrayList<Recipe> recipes = getRecipeFromDb();
+        setUpListView(recipes);
 
     }
 
@@ -116,28 +113,9 @@ public class widgetConfigurationActivity extends AppCompatActivity {
 
     private ArrayList<Recipe> getRecipeFromDb()
     {
-        final MyDatabase myDatabase = LocalRepository.getInstance(getApplicationContext());
+        ArrayList<Recipe> recipesFromDatabase = LocalRepository.getLocalRepository().getAllRecipes(); // todo check if there is database first
 
-        if(myDatabase == null) finish();
-        else
-        {
-            AsyncTask anync = new AsyncTask() {
-                @Override
-                protected Object doInBackground(Object[] objects)
-                {
-                    return  (ArrayList<Recipe>) myDatabase.recipeDao().getAllRecipes();
-                }
-
-                @Override
-                protected void onPostExecute(Object o) {
-                    super.onPostExecute(o);
-                    ArrayList<Recipe> recipes = (ArrayList<Recipe>) o;
-
-                    setUpListView(recipes);
-                }
-            }.execute();
-        }
-        return null;
+        return recipesFromDatabase;
     }
 
 }

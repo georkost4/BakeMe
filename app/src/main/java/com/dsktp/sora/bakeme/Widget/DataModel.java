@@ -12,6 +12,7 @@ import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.provider.SyncStateContract;
 import android.util.Log;
 
 import com.dsktp.sora.bakeme.Controller.MainScreenController;
@@ -19,6 +20,7 @@ import com.dsktp.sora.bakeme.Model.Ingredient;
 import com.dsktp.sora.bakeme.Model.Recipe;
 import com.dsktp.sora.bakeme.Repository.MyDatabase;
 import com.dsktp.sora.bakeme.Repository.LocalRepository;
+import com.dsktp.sora.bakeme.Utils.Constants;
 
 import java.util.ArrayList;
 
@@ -28,32 +30,18 @@ import java.util.ArrayList;
  * The name of the project is BakeMe and it was created as part of
  * UDACITY ND programm.
  */
+
+
 public class DataModel
 {
 
-    public String ingredientName = "";
-
-
     public static ArrayList<Ingredient> getDataFromDatabase(Context context)
     {
-        ArrayList<Recipe> list = null;
-
-        MainScreenController controller = MainScreenController.getController();
-        MyDatabase db = LocalRepository.getRoomDatabase(context);
-
         int recipeChosen = userRecipePreference(context);
 
-        if(db!=null)
-        {
-            list = controller.fetchRecipes();
-        }
-        else
-        {
-            db = Room.databaseBuilder(context,MyDatabase.class,"recipe.db").build();
-            list = (ArrayList<Recipe>) db.recipeDao().getAllRecipes();
+        ArrayList<Ingredient> ingredients = LocalRepository.getRoomDatabase().recipeDao().getRecipeById(recipeChosen).getIngredients();
 
-        }
-        return list.get(recipeChosen).getIngredients();
+        return ingredients;
     }
 
 
@@ -62,7 +50,7 @@ public class DataModel
     {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
-        int userPrefRecipeId =  sharedPreferences.getInt("widget_chosen_recipe_id",0);
+        int userPrefRecipeId =  sharedPreferences.getInt(Constants.WIDGET_CHOSEN_RECIPE_KEY,0);
         Log.d("DEBUG","/////////////----------RETURNING ID === " + userPrefRecipeId + "-------///////");
         return  userPrefRecipeId;
     }

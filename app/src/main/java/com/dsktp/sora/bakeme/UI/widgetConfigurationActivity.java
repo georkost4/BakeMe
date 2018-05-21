@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.dsktp.sora.bakeme.Model.Recipe;
 import com.dsktp.sora.bakeme.R;
 import com.dsktp.sora.bakeme.Repository.LocalRepository;
+import com.dsktp.sora.bakeme.Utils.Constants;
 
 import java.util.ArrayList;
 
@@ -48,17 +49,16 @@ public class widgetConfigurationActivity extends AppCompatActivity {
         showTheAvailableRecipes();
 
         Intent intentFromWidget = getIntent();
-        if(intentFromWidget!=null)
-        {
-            mWidgetId = intentFromWidget.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID);
 
-            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
+        mWidgetId = intentFromWidget.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID);
 
-            RemoteViews views = new RemoteViews(getPackageName(),R.layout.recipe_widget_layout);
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
 
-            appWidgetManager.updateAppWidget(mWidgetId, views);
+        RemoteViews views = new RemoteViews(getPackageName(),R.layout.recipe_widget_layout);
 
-        }
+        appWidgetManager.updateAppWidget(mWidgetId, views);
+
+
 
     }
 
@@ -102,7 +102,7 @@ public class widgetConfigurationActivity extends AppCompatActivity {
 
         Log.d("DEBIG","------------------------------Saving to user pref id with " + id + "------------------------");
 
-        sharedPreferences.edit().putInt("widget_chosen_recipe_id",id).apply();
+        sharedPreferences.edit().putInt(Constants.WIDGET_CHOSEN_RECIPE_KEY,id).apply();
 
         Intent resultValue = new Intent();
         resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mWidgetId);
@@ -113,9 +113,22 @@ public class widgetConfigurationActivity extends AppCompatActivity {
 
     private ArrayList<Recipe> getRecipeFromDb()
     {
-        ArrayList<Recipe> recipesFromDatabase = LocalRepository.getLocalRepository().getAllRecipes(); // todo check if there is database first
-
-        return recipesFromDatabase;
+        //check first if there is a cached list
+        boolean weHaveCachedList = LocalRepository.getLocalRepository().checkIfThereIsCachedList();
+        if(weHaveCachedList)
+        {
+            //get the recipe list from the repository
+            ArrayList<Recipe> recipesFromDatabase = LocalRepository.getLocalRepository().getAllRecipes();
+            return recipesFromDatabase;
+        }
+        else
+        {
+            //show a toast to the user
+//            Toast.makeText(this,"Run the app first to download the available recipes",Toast.LENGTH_LONG).show(); //TODO FIX THIS
+            setResult(RESULT_CANCELED);
+            finish();
+        }
+        return null;
 
     }
 

@@ -17,6 +17,7 @@ import android.widget.RemoteViewsService;
 import com.dsktp.sora.bakeme.Model.Ingredient;
 import com.dsktp.sora.bakeme.Model.Recipe;
 import com.dsktp.sora.bakeme.R;
+import com.dsktp.sora.bakeme.Utils.Constants;
 
 import java.util.ArrayList;
 
@@ -26,6 +27,8 @@ import java.util.ArrayList;
  * The name of the project is BakeMe and it was created as part of
  * UDACITY ND programm.
  */
+
+
 public class ListViewRemoteViewsService extends RemoteViewsService
 {
     public String DEBUG_TAG = "#" + this.getClass().getSimpleName();
@@ -33,6 +36,7 @@ public class ListViewRemoteViewsService extends RemoteViewsService
     public RemoteViewsFactory onGetViewFactory(Intent intent)
     {
         Log.e(DEBUG_TAG,"-----------Creating new AppWidgetListView object--------");
+
         return new AppWidgetListView (this.getApplicationContext(), DataModel.getDataFromDatabase(getApplicationContext()));
     }
 }
@@ -41,7 +45,6 @@ class AppWidgetListView implements RemoteViewsService.RemoteViewsFactory
 {
     private  final String DEBUG_TAG = "#" + this.getClass().getSimpleName();
     private Context mContext;
-   // private ArrayList<Recipe> mRecipesList; // todo uncomment this
     private ArrayList<Ingredient> mIngredientList;
 
 
@@ -70,7 +73,7 @@ class AppWidgetListView implements RemoteViewsService.RemoteViewsFactory
     @Override
     public int getCount()
     {
-        Log.e(DEBUG_TAG,"RecipeList count = " + mIngredientList.size());
+        Log.e(DEBUG_TAG,"Ingredients list count = " + mIngredientList.size());
         return mIngredientList.size();
     }
 
@@ -88,9 +91,10 @@ class AppWidgetListView implements RemoteViewsService.RemoteViewsFactory
         //fill the pending intent with data
         Intent fillInIntent = new Intent();
 
-        fillInIntent.setAction("SHOW_RECIPE_DETAILS");
+        //set action to the intent so the activity can handle the action properly
+        fillInIntent.setAction(Constants.SHOW_RECIPE_DETAILS_ACTION);
 
-
+        //set the click listener
         views.setOnClickFillInIntent(R.id.widget_ingredient_row_ingredient_name, fillInIntent);
 
         return views;

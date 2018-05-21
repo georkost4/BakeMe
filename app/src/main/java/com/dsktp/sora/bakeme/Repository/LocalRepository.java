@@ -121,9 +121,26 @@ public class LocalRepository  {
      */
     public boolean checkIfThereIsCachedList() //todo asynctask background query
     {
-        int rows = mDb.recipeDao().checkIfEmpty();
-        Log.d(DEBUG_TAG,"rows returned from check method = " + rows);
-        return rows > 0;
+        if(checkIfWeHaveDatabase()) {
+            int rows = mDb.recipeDao().checkIfEmpty();
+            Log.d(DEBUG_TAG, "rows returned from check method = " + rows);
+            return rows > 0;
+        }
+        else return false;
+    }
+
+    public boolean checkIfWeHaveDatabase()
+    {
+        if(mDb == null)
+        {
+            Log.d(DEBUG_TAG,"WE DONT HAVE DATABASE");
+            return false;
+        }
+        else
+        {
+            Log.d(DEBUG_TAG,"WE HAVE DATABASE");
+            return true;
+        }
     }
 
 

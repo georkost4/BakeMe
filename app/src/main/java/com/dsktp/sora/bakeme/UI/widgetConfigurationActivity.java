@@ -65,7 +65,12 @@ public class widgetConfigurationActivity extends AppCompatActivity {
     private void showTheAvailableRecipes()
     {
         ArrayList<Recipe> recipes = getRecipeFromDb();
-        setUpListView(recipes);
+        if (recipes != null) // if there is no database the above statement will return NULL so check first
+        {
+            //we have a database and we have recipes available
+            //so setup the listview
+            setUpListView(recipes);
+        }
 
     }
 
@@ -73,16 +78,15 @@ public class widgetConfigurationActivity extends AppCompatActivity {
         ListView listView = findViewById(R.id.configuration_listview_recipes);
 
         ArrayList<String> values = new ArrayList<>();
+
         for(Recipe recipe : recipes)
         {
             values.add(recipe.getName());
         }
 
-
         ArrayAdapter arrayAdapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1,values);
 
         listView.setAdapter(arrayAdapter);
-
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -124,7 +128,7 @@ public class widgetConfigurationActivity extends AppCompatActivity {
         else
         {
             //show a toast to the user
-//            Toast.makeText(this,"Run the app first to download the available recipes",Toast.LENGTH_LONG).show(); //TODO FIX THIS
+            Toast.makeText(this,"Run the app first to download the available recipes",Toast.LENGTH_LONG).show();
             setResult(RESULT_CANCELED);
             finish();
         }

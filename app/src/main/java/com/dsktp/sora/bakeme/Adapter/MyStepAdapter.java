@@ -47,7 +47,7 @@ public class MyStepAdapter extends RecyclerView.Adapter<MyStepAdapter.MyStepView
      */
     public interface StepClickListener
     {
-        void onStepClicked(Step stepClicked);
+        void onStepClicked(Step stepClicked,ArrayList<Step> stepList,int stepIndex);
     }
 
     /**
@@ -137,7 +137,7 @@ public class MyStepAdapter extends RecyclerView.Adapter<MyStepAdapter.MyStepView
             {
                 //Call the onStepClicked method to delegate the handling
                 //to the Activity/Fragment who is listening
-                mListener.onStepClicked(mStepList.get(getAdapterPosition()));
+                mListener.onStepClicked(mStepList.get(getAdapterPosition()),mStepList,getAdapterPosition());
             }
             //if there is no listener for this event throw a exception
             else throw new UnsupportedOperationException("No callback for this method");

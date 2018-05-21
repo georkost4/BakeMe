@@ -123,8 +123,7 @@ public class LocalRepository  {
     {
         int rows = mDb.recipeDao().checkIfEmpty();
         Log.d(DEBUG_TAG,"rows returned from check method = " + rows);
-        if(rows>0) return true; // the table exists so there is cached version of the list
-        return false; // there are no rows returned so no cached version of the list
+        return rows > 0;
     }
 
 

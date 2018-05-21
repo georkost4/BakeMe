@@ -65,6 +65,7 @@ import com.dsktp.sora.bakeme.R;
 public class NavBarFragment extends Fragment
 {
     private  final String DEBUG_TAG = "#" + this.getClass().getSimpleName();
+    private  View mView;
 
     @Nullable
     @Override
@@ -72,8 +73,10 @@ public class NavBarFragment extends Fragment
     {
         Log.d(DEBUG_TAG,"------------ON CREATE VIEW---------------");
         //inflate the view
-        View inflatedView = inflater.inflate(R.layout.fragment_nav_bar,container,false);
-
-        return inflatedView;
+        if(mView == null)
+        {
+            mView = inflater.inflate(R.layout.fragment_nav_bar, container, false);
+        }
+        return mView;
     }
 }

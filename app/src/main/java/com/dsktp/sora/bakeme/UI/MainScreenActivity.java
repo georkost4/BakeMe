@@ -17,6 +17,7 @@
 package com.dsktp.sora.bakeme.UI;
 
 import android.content.Intent;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -25,6 +26,7 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.dsktp.sora.bakeme.Adapter.MyRecipeAdapter;
 import com.dsktp.sora.bakeme.Adapter.MyStepAdapter;
@@ -32,7 +34,6 @@ import com.dsktp.sora.bakeme.Controller.MainScreenController;
 import com.dsktp.sora.bakeme.Model.Recipe;
 import com.dsktp.sora.bakeme.Model.Step;
 import com.dsktp.sora.bakeme.R;
-import com.dsktp.sora.bakeme.Repository.MyDatabase;
 import com.dsktp.sora.bakeme.Repository.LocalRepository;
 import com.dsktp.sora.bakeme.UI.Fragment.RecipeListFragment;
 import com.dsktp.sora.bakeme.UI.Fragment.DetailFragment;
@@ -55,6 +56,10 @@ public class MainScreenActivity extends AppCompatActivity implements MyRecipeAda
     private RecyclerView mRecipeListRV;
     private final String DEBUG_TAG = "#" + getClass().getSimpleName();
     private LocalRepository mLocalRepository;
+
+    private int mCurrentStepIndex;
+    private ArrayList<Step> mCurrentStepList;
+    private int mCurrentStepListSize;
 
     @Override
     protected void onResume()
@@ -155,20 +160,27 @@ public class MainScreenActivity extends AppCompatActivity implements MyRecipeAda
             // if there aren't any fragment's on the backstack meaning the user navigated back to the first fragment
             // Recreate it
             {
-                RecipeListFragment recipeListFragment = new RecipeListFragment(); //TODO RECONSIDER RE-ALLOCATING NEW OBJECT
+                if (mManager.findFragmentByTag("recipe_list_fragment_tag") == null)
+                {
+                    // if we dont have already created the fragment create it
+                    RecipeListFragment recipeListFragment = new RecipeListFragment(); //TODO RECONSIDER RE-ALLOCATING NEW OBJECT
                 mManager.beginTransaction()
-                        .replace(R.id.fragment_placeholder_recipe_list,recipeListFragment)
+                        .replace(R.id.fragment_placeholder_recipe_list, recipeListFragment,"recipe_list_fragment_tag")
                         .commit();
+            }
             }
         }
         else
         {
-            //The first time the app launches has savedInstanceState == null
-            // so "add" the fragment
-            RecipeListFragment recipeListFragment = new RecipeListFragment(); //TODO RECONSIDER RE-ALLOCATING NEW OBJECT
-            mManager.beginTransaction()
-                    .replace(R.id.fragment_placeholder_recipe_list,recipeListFragment)
-                    .commit();
+            if(mManager.findFragmentByTag("recipe_list_fragment_tag") == null) // if we dont have already created the fragment create it
+            {
+                //The first time the app launches has savedInstanceState == null
+                // so "add" the fragment
+                RecipeListFragment recipeListFragment = new RecipeListFragment(); //TODO RECONSIDER RE-ALLOCATING NEW OBJECT
+                mManager.beginTransaction()
+                        .replace(R.id.fragment_placeholder_recipe_list, recipeListFragment, "recipe_list_fragment_tag")
+                        .commit();
+            }
         }
     }
 
@@ -184,9 +196,13 @@ public class MainScreenActivity extends AppCompatActivity implements MyRecipeAda
     public void handleRecipeClicked(int position, ArrayList<Recipe> recipes) //TODO remove the arrayList parameter it's useless
     {
         // Show recipe detail fragment
-        DetailFragment detailFragment = new DetailFragment(recipes.get(position));
+        if(mManager.findFragmentByTag("recipe_fragment_tag") == null)
+        {
+            Log.d(DEBUG_TAG,"We dont have a recipe fragment so create it");
+            DetailFragment detailFragment = new DetailFragment(recipes.get(position));
 
-        mManager.beginTransaction().replace(R.id.fragment_placeholder_recipe_list,detailFragment).addToBackStack("").commit();
+            mManager.beginTransaction().replace(R.id.fragment_placeholder_recipe_list, detailFragment, "recipe_fragment_tag").addToBackStack("").commit();
+        }
 
     }
 
@@ -195,29 +211,70 @@ public class MainScreenActivity extends AppCompatActivity implements MyRecipeAda
      * It create's a stepDetailFragment and show's it on the UI . This stepDetailFragment contain's detail's about
      * how to execute this particular step with a video and a helpful text.
      * @param stepClicked The Step object which was clicked
+     * @param stepList The full list containing all the steps of Executions
+     * @param stepIndex the index inside the stepList
      */
     @Override
-    public void onStepClicked(Step stepClicked)
+    public void onStepClicked(Step stepClicked,ArrayList<Step> stepList,int stepIndex)
     {
         // Show recipe detail fragment
-        StepDetailFragment detailFragment = new StepDetailFragment(stepClicked);
+        StepDetailFragment stepDetailFragment = new StepDetailFragment(stepClicked);
+        NavBarFragment navBarFragment = new NavBarFragment();
+
+       mCurrentStepIndex = stepIndex;
+       mCurrentStepList = stepList;
+       mCurrentStepListSize = mCurrentStepList.size();
+
 
         //show navigation  bar (previous/next) step  if  in phone mode to
         if(!mTwoPane)
         {
-            findViewById(R.id.fragment_placeholder_nav_bar).setVisibility(View.VISIBLE);
-            mManager.beginTransaction()
-                    .replace(R.id.fragment_placeholder_recipe_list,detailFragment)
-                    .add(R.id.fragment_placeholder_nav_bar,new NavBarFragment())
-                    .addToBackStack("").commit();
+            if(mManager.findFragmentByTag("detail_fragment_tag") == null) // create the fragments
+            {
+                mManager.beginTransaction()
+                        .replace(R.id.fragment_placeholder_recipe_list, stepDetailFragment, "detail_fragment_tag")
+                        .add(R.id.fragment_placeholder_nav_bar, navBarFragment, "nav_bar_fragment_tag")
+                        .addToBackStack("").commit();
+            }
         }
         else
         {
             //In tablet mode
             // change the step
-            mManager.beginTransaction().replace(R.id.right_part_placeholder,detailFragment)
+            mManager.beginTransaction().replace(R.id.right_part_placeholder, stepDetailFragment)
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                     .commit();
+        }
+    }
+
+
+    public void ShowPreviousStep(View view)
+    {
+        if(mCurrentStepIndex>0) // if there is a previous step navigate to it
+        {
+            mCurrentStepIndex = mCurrentStepIndex - 1; // the new index is -1
+            StepDetailFragment stepDetailFragment = new StepDetailFragment(mCurrentStepList.get(mCurrentStepIndex)); // pass the previous step to the constructor
+            mManager.beginTransaction().replace(R.id.fragment_placeholder_recipe_list,stepDetailFragment).addToBackStack("").commit();
+        }
+        else
+        {
+            Toast.makeText(this,"There is no previous step to navigate to.",Toast.LENGTH_LONG).show();
+        }
+
+    }
+
+    public void ShowNextStep(View view)
+    {
+        if(mCurrentStepIndex+1<=mCurrentStepListSize-1)
+        {
+            mCurrentStepIndex = mCurrentStepIndex + 1; // the new index is +1
+            StepDetailFragment stepDetailFragment = new StepDetailFragment(mCurrentStepList.get(mCurrentStepIndex));
+            mManager.beginTransaction().replace(R.id.fragment_placeholder_recipe_list,stepDetailFragment).addToBackStack("").commit();
+
+        }
+        else
+        {
+            Toast.makeText(this,"There is no next step to navigate to.",Toast.LENGTH_LONG).show();
         }
     }
 

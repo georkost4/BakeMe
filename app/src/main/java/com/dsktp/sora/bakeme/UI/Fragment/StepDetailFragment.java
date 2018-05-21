@@ -39,6 +39,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,7 +71,7 @@ import com.google.android.exoplayer2.util.Util;
  * UDACITY ND programm.
  */
 public class StepDetailFragment extends Fragment {
-    private final String DEBUG_TAG = this.getClass().getSimpleName();
+    private final String DEBUG_TAG = "#" + this.getClass().getSimpleName();
     private Step mStepClicked;
     private SimpleExoPlayerView mPlayerView;
     private ExoPlayer mExoPlayer;
@@ -99,13 +100,17 @@ public class StepDetailFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         //TODO CHECK TO SEE IF IT RE-CREATES THE VIEW OR IS IT UNNESSESERAY CHECK
+        Log.d(DEBUG_TAG,"-------------ON CREATE VIEW------------------");
         if(mInflatedView == null)
         {
             mInflatedView = inflater.inflate(R.layout.fragment_recipe_step_detail, container, false);
 
-            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT && !mTwoPane) {
+            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT && !mTwoPane)
+            {
                 TextView fullDescriptionTextView = mInflatedView.findViewById(R.id.tv_step_full_description_value);
                 fullDescriptionTextView.setText(mStepClicked.getDescription());
+
+                getActivity().findViewById(R.id.fragment_placeholder_nav_bar).setVisibility(View.VISIBLE);
             }
 
             //Set up exo player

@@ -116,6 +116,7 @@ public class widgetConfigurationActivity extends AppCompatActivity {
         ArrayList<Recipe> recipesFromDatabase = LocalRepository.getLocalRepository().getAllRecipes(); // todo check if there is database first
 
         return recipesFromDatabase;
+
     }
 
 }

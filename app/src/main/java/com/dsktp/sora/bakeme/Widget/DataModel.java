@@ -31,21 +31,34 @@ import java.util.ArrayList;
  * UDACITY ND programm.
  */
 
-
+/**
+ * This class provides the widget Remote View Service with two helper static methods.
+ */
 public class DataModel
 {
 
+    /**
+     * This method return's the ingredients list by querying the database by the recipe id of the chosen recipe
+     * from the shared preferences, saved there when the user clicked a recipe
+     * @param context The context to access the shared preferences
+     * @return ArrayList<Ingredient> list of the chosen recipe
+     */
     public static ArrayList<Ingredient> getDataFromDatabase(Context context)
     {
-        int recipeChosen = userRecipePreference(context);
+        int recipeChosen = userRecipePreference(context); // get the recipe id from the shared preferences
 
+        //query the database by id and get the ingredients list of that recipe
         ArrayList<Ingredient> ingredients = LocalRepository.getRoomDatabase().recipeDao().getRecipeById(recipeChosen).getIngredients();
 
         return ingredients;
     }
 
 
-
+    /**
+     * This method return's the recipe id of the chosen by the user in the widget configuration activity
+     * @param context The context object
+     * @return The id of the recipe chosen at the widget configuration screen
+     */
     public static int userRecipePreference(Context context)
     {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);

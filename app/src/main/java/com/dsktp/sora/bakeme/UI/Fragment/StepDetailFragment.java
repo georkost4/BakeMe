@@ -33,7 +33,9 @@
 
 package com.dsktp.sora.bakeme.UI.Fragment;
 
+import android.content.Context;
 import android.content.res.Configuration;
+import android.icu.util.ValueIterator;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -112,6 +114,7 @@ public class StepDetailFragment extends Fragment {
 
                 getActivity().findViewById(R.id.fragment_placeholder_nav_bar).setVisibility(View.VISIBLE);
             }
+
 
             //Set up exo player
             mPlayerView = mInflatedView.findViewById(R.id.simpleExoPlayerView);

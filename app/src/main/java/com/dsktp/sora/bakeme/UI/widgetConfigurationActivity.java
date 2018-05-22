@@ -29,6 +29,25 @@ import com.dsktp.sora.bakeme.Utils.Constants;
 
 import java.util.ArrayList;
 
+/**
+ * This class is responsible for the configuration screen of the widget that
+ * this application has . It let's the user choose one recipe to list it's ingredients in a listview
+ *
+ * for example this
+ * //////////////////////////////
+ * /Recipe name French Chocolate/
+ * /                            /
+ * /3ml Milk                    /
+ * /----------------------------/   <-----widget screen example
+ * /200gr sugar                 /
+ * /----------------------------/
+ * /400gr butter                /
+ * /----------------------------/
+ * //////////////////////////////
+ *
+ *
+ *
+ */
 public class widgetConfigurationActivity extends AppCompatActivity {
 
 
@@ -62,6 +81,9 @@ public class widgetConfigurationActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Show the available recipes from the database
+     */
     private void showTheAvailableRecipes()
     {
         ArrayList<Recipe> recipes = getRecipeFromDb();
@@ -74,20 +96,27 @@ public class widgetConfigurationActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Set up a simple listview for showing the recipes from the database
+     * @param recipes The ArrayList<Recipe> object with the recipes from the database
+     */
     private void setUpListView(final ArrayList<Recipe> recipes) {
         ListView listView = findViewById(R.id.configuration_listview_recipes);
 
+
+        //Create a list with the recipe names
         ArrayList<String> values = new ArrayList<>();
 
-        for(Recipe recipe : recipes)
+        for(Recipe recipe : recipes) // save the recipe names to a new list
         {
             values.add(recipe.getName());
         }
-
+        //create a default arrayadapter with string values
         ArrayAdapter arrayAdapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1,values);
 
-        listView.setAdapter(arrayAdapter);
+        listView.setAdapter(arrayAdapter); // set the adapter
 
+        //save the recipe id when the user clicks on a recipe
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
@@ -95,12 +124,16 @@ public class widgetConfigurationActivity extends AppCompatActivity {
                 String toastMessage = recipes.get(position).getName() + " Clicked";
                 Toast.makeText(getApplicationContext(), toastMessage,Toast.LENGTH_LONG).show();
 
+                //save the id of the recipe to the shared preferences
                 saveTheRecipeToTheUserPreferences(recipes.get(position).getId());
 
             }
         });
     }
 
+    /**
+     * This method saves the id of the chosen recipe id to the shared preferences
+     */
     private void saveTheRecipeToTheUserPreferences(int id) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -110,11 +143,16 @@ public class widgetConfigurationActivity extends AppCompatActivity {
 
         Intent resultValue = new Intent();
         resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mWidgetId);
+
         setResult(RESULT_OK, resultValue);
         finish();
     }
 
 
+    /**
+     * This method is used to fetch the available recipes from the database
+     * @return ArrayList<Recipe> with the available recipes.
+     */
     private ArrayList<Recipe> getRecipeFromDb()
     {
         //check first if there is a cached list

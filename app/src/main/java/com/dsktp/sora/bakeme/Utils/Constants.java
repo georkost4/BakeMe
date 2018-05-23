@@ -34,4 +34,6 @@ public class Constants
     public static final String SHOW_RECIPE_DETAILS_ACTION = "SHOW_RECIPE_DETAILS";
 
     public static final String DATABASE_NAME = "recipe.db";
+
+    public static final String RECIPE_CLICKED_KEY = "recipe_clicked_key";
 }

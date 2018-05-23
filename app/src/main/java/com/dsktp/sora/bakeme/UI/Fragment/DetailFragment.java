@@ -48,6 +48,9 @@ import com.dsktp.sora.bakeme.Adapter.MyIngredientsAdapter;
 import com.dsktp.sora.bakeme.Adapter.MyStepAdapter;
 import com.dsktp.sora.bakeme.Model.Recipe;
 import com.dsktp.sora.bakeme.R;
+import com.dsktp.sora.bakeme.Utils.Constants;
+
+import static com.dsktp.sora.bakeme.Utils.Constants.RECIPE_CLICKED_KEY;
 
 /**
  * This file created by Georgios Kostogloudis
@@ -81,7 +84,7 @@ public class DetailFragment extends Fragment
         if(savedInstanceState != null)
         {
             //retrieve the clicked recipe from the bundle
-            mRecipeClicked = savedInstanceState.getParcelable("recipe_list"); //todo extract resource
+            mRecipeClicked = savedInstanceState.getParcelable(RECIPE_CLICKED_KEY);
         }
 
         //inflate the layout
@@ -138,9 +141,10 @@ public class DetailFragment extends Fragment
 
 
     @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState)
+    {
         super.onSaveInstanceState(outState);
         //save the recipe clicked to the bundle
-        outState.putParcelable("recipe_list",mRecipeClicked); // todo extract string resource
+        outState.putParcelable(RECIPE_CLICKED_KEY,mRecipeClicked);
     }
 }

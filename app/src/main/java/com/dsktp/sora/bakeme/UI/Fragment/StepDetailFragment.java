@@ -33,10 +33,7 @@
 
 package com.dsktp.sora.bakeme.UI.Fragment;
 
-import android.content.Context;
 import android.content.res.Configuration;
-import android.icu.util.ValueIterator;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -48,23 +45,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.dsktp.sora.bakeme.Model.Step;
+import com.dsktp.sora.bakeme.Player.Player;
 import com.dsktp.sora.bakeme.R;
-import com.google.android.exoplayer2.DefaultLoadControl;
-import com.google.android.exoplayer2.ExoPlayer;
-import com.google.android.exoplayer2.ExoPlayerFactory;
-import com.google.android.exoplayer2.LoadControl;
-import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
-import com.google.android.exoplayer2.source.ExtractorMediaSource;
-import com.google.android.exoplayer2.source.MediaSource;
-import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
-import com.google.android.exoplayer2.trackselection.TrackSelection;
-import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
-import com.google.android.exoplayer2.upstream.DataSource;
-import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
-import com.google.android.exoplayer2.util.Util;
 
 /**
  * This file created by Georgios Kostogloudis
@@ -76,7 +59,8 @@ public class StepDetailFragment extends Fragment {
     private final String DEBUG_TAG = "#" + this.getClass().getSimpleName();
     private Step mStepClicked;
     private SimpleExoPlayerView mPlayerView;
-    private ExoPlayer mExoPlayer;
+//    private ExoPlayer mExoPlayer;
+    private  Player mExoPlayer;
     private long mCurrentPosition = 0;
     private boolean mTwoPane = false;
     private View mInflatedView = null;
@@ -92,11 +76,14 @@ public class StepDetailFragment extends Fragment {
         mTwoPane = getResources().getBoolean(R.bool.twoPane);
         if(savedInstanceState!=null)
         {
+            Log.d(DEBUG_TAG,"------RESTORING SAVED INSTANCE VALUES FOR FRAGMENT-------------");
             mCurrentPosition = savedInstanceState.getLong("current_pos");
             mStepClicked = savedInstanceState.getParcelable("step_clicked");
         }
 
     }
+
+
 
     @Nullable
     @Override
@@ -124,44 +111,79 @@ public class StepDetailFragment extends Fragment {
         return mInflatedView;
     }
 
-    private void setUpPlayer() {
-        TrackSelection.Factory videoTrackSelectionFactory =
-                new AdaptiveTrackSelection.Factory(new DefaultBandwidthMeter());
-        TrackSelector trackSelector = new DefaultTrackSelector(videoTrackSelectionFactory);
-        LoadControl mLoadControl = new DefaultLoadControl();
-        mExoPlayer = ExoPlayerFactory.newSimpleInstance(getContext(), trackSelector);
 
-        mPlayerView.setPlayer(mExoPlayer);
+    private void setUpPlayer()
+    {
+        mExoPlayer = new Player(getContext(),mPlayerView,mStepClicked.getVideoURL());
 
-        mExoPlayer.setPlayWhenReady(true);
-
-        DefaultExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
-        DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(getContext(),
-                Util.getUserAgent(getContext(), getActivity().getApplication().getPackageName()), new DefaultBandwidthMeter());
-        MediaSource mediaSource = new ExtractorMediaSource(Uri.parse(mStepClicked.getVideoURL()),
-                dataSourceFactory, extractorsFactory, null, null);
-        mExoPlayer.prepare(mediaSource);
-
-        mExoPlayer.seekTo(mCurrentPosition);
     }
 
-    private void releasePlayer() {
-        mExoPlayer.stop();
-        mExoPlayer.release();
-        mExoPlayer = null;
-    }
+
+//    private void setUpPlayer() {
+//
+//        TrackSelection.Factory videoTrackSelectionFactory = new AdaptiveTrackSelection.Factory(new DefaultBandwidthMeter());
+//        TrackSelector trackSelector = new DefaultTrackSelector(videoTrackSelectionFactory);
+//
+//        mExoPlayer = ExoPlayerFactory.newSimpleInstance(getContext(), trackSelector);
+//
+//        mPlayerView.setPlayer(mExoPlayer);
+//
+//        mExoPlayer.setPlayWhenReady(true);
+//
+//        DefaultExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
+//
+//        DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(getContext(),Util.getUserAgent(getContext(), getActivity().getApplication().getPackageName()), new DefaultBandwidthMeter());
+//
+//        MediaSource mediaSource = new ExtractorMediaSource(Uri.parse(mStepClicked.getVideoURL()), dataSourceFactory, extractorsFactory, null, null);
+//
+//        mExoPlayer.prepare(mediaSource);
+//
+//        mExoPlayer.seekTo(mCurrentPosition);
+//    }
+
+//    private void releasePlayer() {
+//        if(mExoPlayer!=null)
+//        {
+//            mExoPlayer.stop();
+//            mExoPlayer.release();
+//            mExoPlayer = null;
+//        }
+//    }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putLong("current_pos",mExoPlayer.getCurrentPosition());
-        outState.putParcelable("step_clicked",mStepClicked);
+        if (mExoPlayer != null)
+        {
+            outState.putLong("current_pos",mExoPlayer.getCurrentPosition());
+            outState.putParcelable("step_clicked",mStepClicked);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(DEBUG_TAG,"Resuming player....");
+        mExoPlayer.startPlayer();
+    }
+
+
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+        Log.d(DEBUG_TAG,"Pausing player...");
+        mExoPlayer.pausePlayer();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        releasePlayer();
+        if(mExoPlayer!=null)
+        {
+            Log.d(DEBUG_TAG,"--------RELEASING THE EXO PLAYER RESOURCES---------");
+            mExoPlayer.releasePlayer();
+        }
     }
 }
 

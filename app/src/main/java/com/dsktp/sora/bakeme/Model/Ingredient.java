@@ -15,6 +15,9 @@ package com.dsktp.sora.bakeme.Model;
  */
 
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * This class represents an Ingredient object used by a Recipe object
  * It contains the following fields:
@@ -22,7 +25,7 @@ package com.dsktp.sora.bakeme.Model;
  * String measure represents the measuring system kg,g,lb
  * String ingredient represents the name of the ingredient
  */
-public class Ingredient
+public class Ingredient implements Parcelable
 {
     private double quantity;
     private String measure;
@@ -62,5 +65,42 @@ public class Ingredient
 
     public void setIngredient(String ingredient) {
         this.ingredient = ingredient;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags)
+    {
+        dest.writeDouble(getQuantity());
+        dest.writeString(getMeasure());
+        dest.writeString(getIngredient());
+    }
+
+    public static final Parcelable.Creator<Ingredient> CREATOR = new Parcelable.Creator<Ingredient>()
+    {
+        public Ingredient createFromParcel(Parcel in) {
+            return new Ingredient(in);
+        }
+
+        public Ingredient[] newArray(int size) {
+            return new Ingredient[size];
+        }
+    };
+
+    /**
+     * This Recipe constructor creates a Recipe object from  a Parcel object as a parameter
+     * and read's the values for a Reco[e object in the same
+     * order we wrote in writeToParcel() method                     //todo change this documentation
+     * @param in the Parcel object that contains an Recipe object
+     */
+    private Ingredient(Parcel in) {
+        setQuantity(in.readDouble());
+        setMeasure(in.readString());
+        setIngredient(in.readString());
     }
 }

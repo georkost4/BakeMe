@@ -12,4 +12,20 @@
     android:layout_width="match_parent"
     android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
     android:id="@+id/simpleExoPlayerView"
-     android:layout_height="match_parent"/>
+     android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/state_holder"
+        android:visibility="gone"
+        android:background="#CCDEDEDE">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textSize="15dp"
+            android:id="@+id/state_text"/>
+    </RelativeLayout>
+
+</com.google.android.exoplayer2.ui.SimpleExoPlayerView>

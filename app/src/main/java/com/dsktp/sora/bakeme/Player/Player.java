@@ -47,6 +47,10 @@ public class Player implements com.google.android.exoplayer2.Player.EventListene
     private RelativeLayout state_holder;
     private TextView state_text;
 
+    private MediaSource mMediaSource;
+
+    private String mVideoURL;
+
     private static String DEBUG_TAG ="#Player.java";
 
     public Player(Context context, SimpleExoPlayerView playerView,String recipe_video_url) {
@@ -54,8 +58,8 @@ public class Player implements com.google.android.exoplayer2.Player.EventListene
         this.dynamicConcatenatingMediaSource = new DynamicConcatenatingMediaSource();
         this.playerView = playerView;
         init_player();
-
-        addMedia(recipe_video_url);
+        this.mVideoURL = recipe_video_url;
+        addMedia(mVideoURL);
 
     }
 
@@ -84,28 +88,46 @@ public class Player implements com.google.android.exoplayer2.Player.EventListene
     }
 
 
+//    /*
+//        add media urls dynamically at run time
+//        Here we have added urls that are compatible with ExtractorMediaSource
+//        If you need other media source then pass media source as arguement not the url
+//     */
+//    public void addMedia(String url) {
+//        DefaultBandwidthMeter bandwidthMeterA = new DefaultBandwidthMeter();
+//        DefaultDataSourceFactory dataSourceFactory = new DefaultDataSourceFactory(context, Util.getUserAgent(context, context.getString(R.string.app_name)), bandwidthMeterA);
+//
+//        ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
+//        mMediaSource = new ExtractorMediaSource(Uri.parse(url),
+//                dataSourceFactory, extractorsFactory, null, null);
+//        if (dynamicConcatenatingMediaSource.getSize() == 0)
+//        {
+//            dynamicConcatenatingMediaSource.addMediaSource(mMediaSource);
+//            mExoPlayer.prepare(dynamicConcatenatingMediaSource);
+//            mExoPlayer.setPlayWhenReady(true);
+//
+//        } else {
+//            dynamicConcatenatingMediaSource.addMediaSource(mMediaSource);
+//
+//        }
+//
+//    }
+
     /*
-        add media urls dynamically at run time
-        Here we have added urls that are compatible with ExtractorMediaSource
-        If you need other media source then pass media source as arguement not the url
-     */
+       add media urls dynamically at run time
+       Here we have added urls that are compatible with ExtractorMediaSource
+       If you need other media source then pass media source as arguement not the url
+    */
     public void addMedia(String url) {
         DefaultBandwidthMeter bandwidthMeterA = new DefaultBandwidthMeter();
-        DefaultDataSourceFactory dataSourceFactory = new DefaultDataSourceFactory(context, Util.getUserAgent(context, "NepTechSansaar"), bandwidthMeterA);
+        DefaultDataSourceFactory dataSourceFactory = new DefaultDataSourceFactory(context, Util.getUserAgent(context, context.getString(R.string.app_name)), bandwidthMeterA);
 
         ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
-        MediaSource mediaSource = new ExtractorMediaSource(Uri.parse(url),
+        mMediaSource = new ExtractorMediaSource(Uri.parse(url),
                 dataSourceFactory, extractorsFactory, null, null);
-        if (dynamicConcatenatingMediaSource.getSize() == 0)
-        {
-            dynamicConcatenatingMediaSource.addMediaSource(mediaSource);
-            mExoPlayer.prepare(dynamicConcatenatingMediaSource);
-            mExoPlayer.setPlayWhenReady(true);
 
-        } else {
-            dynamicConcatenatingMediaSource.addMediaSource(mediaSource);
-
-        }
+        mExoPlayer.prepare(mMediaSource);
+        mExoPlayer.setPlayWhenReady(true);
 
     }
 
@@ -126,12 +148,19 @@ public class Player implements com.google.android.exoplayer2.Player.EventListene
     }
 
 
-    public void releasePlayer() {
+    public void stopPlayer() {
         if(mExoPlayer!=null)
         {
             mExoPlayer.stop();
+//            mExoPlayer = null;
+        }
+    }
+
+    public void releasePlayer()
+    {
+        if(mExoPlayer!=null)
+        {
             mExoPlayer.release();
-            mExoPlayer = null;
         }
     }
 
@@ -214,8 +243,20 @@ public class Player implements com.google.android.exoplayer2.Player.EventListene
         mExoPlayer.setPlayWhenReady(false);
         mExoPlayer.getPlaybackState();
     }
-    public void startPlayer(){
-        mExoPlayer.setPlayWhenReady(true);
-        mExoPlayer.getPlaybackState();
+    public void startPlayer(final long lastPosition)
+    {
+
+        if (mExoPlayer!=null)
+        {
+            Runnable thread = new Runnable() {
+                @Override
+                public void run() {
+                    addMedia(mVideoURL);
+                    mExoPlayer.seekTo(lastPosition);
+                }
+            };
+            thread.run();
+        }
+//       addMedia(mVideoURL);
     }
 }

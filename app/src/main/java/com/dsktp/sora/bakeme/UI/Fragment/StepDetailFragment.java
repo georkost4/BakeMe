@@ -164,7 +164,7 @@ public class StepDetailFragment extends Fragment {
     public void onResume() {
         super.onResume();
         Log.d(DEBUG_TAG,"Resuming player....");
-        mExoPlayer.startPlayer();
+        mExoPlayer.startPlayer(mCurrentPosition);
     }
 
 
@@ -181,9 +181,16 @@ public class StepDetailFragment extends Fragment {
         super.onStop();
         if(mExoPlayer!=null)
         {
-            Log.d(DEBUG_TAG,"--------RELEASING THE EXO PLAYER RESOURCES---------");
-            mExoPlayer.releasePlayer();
+            Log.d(DEBUG_TAG,"--------STOPPING THE EXO PLAYER RESOURCES---------");
+            mExoPlayer.stopPlayer();
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(DEBUG_TAG,"--------RELEASING THE EXO PLAYER RESOURCES---------");
+        mExoPlayer.releasePlayer();
     }
 }
 

@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="36dp"
         android:layout_marginTop="16dp"
-        android:text="Ingredients"
+        android:text="@string/tv_ingredients_tag_text"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -39,7 +39,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/view"
+        app:layout_constraintStart_toEndOf="@+id/barrier_view"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
         tools:listitem="@layout/step_row_item">
@@ -57,14 +57,14 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/view"
+        app:layout_constraintEnd_toStartOf="@+id/barrier_view"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_ingredients_tag"
         app:layout_constraintVertical_bias="0.0"
         tools:listitem="@layout/ingredient_row_list" />
 
     <View
-        android:id="@+id/view"
+        android:id="@+id/barrier_view"
         android:layout_width="7dp"
         android:layout_height="0dp"
         android:layout_alignParentStart="true"

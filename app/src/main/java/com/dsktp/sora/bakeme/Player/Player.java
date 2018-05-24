@@ -16,7 +16,6 @@ import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.Timeline;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.extractor.ExtractorsFactory;
-import com.google.android.exoplayer2.source.DynamicConcatenatingMediaSource;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.TrackGroupArray;
@@ -37,10 +36,14 @@ import com.google.android.exoplayer2.util.Util;
  * The name of the project is BakeMe and it was created as part of
  * UDACITY ND programm.
  */
+
+/**
+ * This helper class implements the Exoplayer callback methods and some other helper methods for
+ * initiating the exoPlayer
+ */
 public class Player implements com.google.android.exoplayer2.Player.EventListener {
 
     private Context context;
-    private DynamicConcatenatingMediaSource dynamicConcatenatingMediaSource;
     private SimpleExoPlayerView playerView;
     private SimpleExoPlayer mExoPlayer;
 
@@ -53,12 +56,12 @@ public class Player implements com.google.android.exoplayer2.Player.EventListene
 
     private static String DEBUG_TAG ="#Player.java";
 
-    public Player(Context context, SimpleExoPlayerView playerView,String recipe_video_url) {
-        this.context = context;
-        this.dynamicConcatenatingMediaSource = new DynamicConcatenatingMediaSource();
-        this.playerView = playerView;
-        init_player();
+    public Player(Context mContext, SimpleExoPlayerView mPlayerView, String recipe_video_url) {
+        this.context = mContext;
+        this.playerView = mPlayerView;
         this.mVideoURL = recipe_video_url;
+
+        init_player();
         addMedia(mVideoURL);
 
     }
@@ -87,38 +90,13 @@ public class Player implements com.google.android.exoplayer2.Player.EventListene
 
     }
 
-
-//    /*
-//        add media urls dynamically at run time
-//        Here we have added urls that are compatible with ExtractorMediaSource
-//        If you need other media source then pass media source as arguement not the url
-//     */
-//    public void addMedia(String url) {
-//        DefaultBandwidthMeter bandwidthMeterA = new DefaultBandwidthMeter();
-//        DefaultDataSourceFactory dataSourceFactory = new DefaultDataSourceFactory(context, Util.getUserAgent(context, context.getString(R.string.app_name)), bandwidthMeterA);
-//
-//        ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
-//        mMediaSource = new ExtractorMediaSource(Uri.parse(url),
-//                dataSourceFactory, extractorsFactory, null, null);
-//        if (dynamicConcatenatingMediaSource.getSize() == 0)
-//        {
-//            dynamicConcatenatingMediaSource.addMediaSource(mMediaSource);
-//            mExoPlayer.prepare(dynamicConcatenatingMediaSource);
-//            mExoPlayer.setPlayWhenReady(true);
-//
-//        } else {
-//            dynamicConcatenatingMediaSource.addMediaSource(mMediaSource);
-//
-//        }
-//
-//    }
-
-    /*
-       add media urls dynamically at run time
-       Here we have added urls that are compatible with ExtractorMediaSource
-       If you need other media source then pass media source as arguement not the url
-    */
-    public void addMedia(String url) {
+    /**
+     * This method dues the nessesary work to add the URL of the video, prepare the player
+     * and start playing the video.
+     * @param url The url of the video
+     */
+    public void addMedia(String url)
+    {
         DefaultBandwidthMeter bandwidthMeterA = new DefaultBandwidthMeter();
         DefaultDataSourceFactory dataSourceFactory = new DefaultDataSourceFactory(context, Util.getUserAgent(context, context.getString(R.string.app_name)), bandwidthMeterA);
 
@@ -131,31 +109,46 @@ public class Player implements com.google.android.exoplayer2.Player.EventListene
 
     }
 
+    /**
+     * This method displays a informative message about buffering state of the video
+     */
     private void show_buffering() {
         state_holder.setVisibility(View.VISIBLE);
         state_text.setTextColor(Color.YELLOW);
-        state_text.setText("BUFFERING...");
+        state_text.setText(R.string.player_buffering_message);
     }
 
+    /**
+     * This method displays a error message to the player view
+     */
     private void show_error() {
         state_holder.setVisibility(View.VISIBLE);
         state_text.setTextColor(Color.RED);
-        state_text.setText("CANNOT PLAY....");
+        state_text.setText(R.string.player_error_play_message);
     }
 
+    /**
+     * This methods removes the grey screen from the player view indicating that the video
+     * is ready to be played.
+     */
     private void show_ready() {
         state_holder.setVisibility(View.GONE);
     }
 
 
+    /**
+     * This method releases the resources held by the exo player . Memory,codecs...
+     */
     public void stopPlayer() {
         if(mExoPlayer!=null)
         {
             mExoPlayer.stop();
-//            mExoPlayer = null;
         }
     }
 
+    /**
+     * This method releases the resources and makes the Exo Plauer instance<b>UNSUSABLE</b>
+     */
     public void releasePlayer()
     {
         if(mExoPlayer!=null)
@@ -164,24 +157,19 @@ public class Player implements com.google.android.exoplayer2.Player.EventListene
         }
     }
 
-
     @Override
-    public void onTimelineChanged(Timeline timeline, Object manifest, int reason) {
-
+    public void onPlayerError(ExoPlaybackException error) {
+        Log.e(DEBUG_TAG,"ERROR state");
+        show_error();
     }
 
-    @Override
-    public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
-    }
+
+
 
     @Override
-    public void onLoadingChanged(boolean isLoading) {
+    public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+        //act acording to the player state
 
-    }
-
-    @Override
-    public void onPlayerStateChanged(boolean playWhenReady,
-                                     int playbackState) {
         switch (playbackState) {
             case com.google.android.exoplayer2.Player.STATE_IDLE:
                 Log.e(DEBUG_TAG,"IDLE state");
@@ -200,49 +188,25 @@ public class Player implements com.google.android.exoplayer2.Player.EventListene
         }
     }
 
-    @Override
-    public void onRepeatModeChanged(int repeatMode) {
-
-    }
-
-    @Override
-    public void onShuffleModeEnabledChanged(boolean shuffleModeEnabled) {
-
-    }
-
-    @Override
-    public void onPlayerError(ExoPlaybackException error) {
-        Log.e(DEBUG_TAG,"ERROR state");
-        show_error();
-    }
-
-    @Override
-    public void onPositionDiscontinuity(int reason) {
-
-    }
-
-
-
-    @Override
-    public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {
-
-    }
-
-    @Override
-    public void onSeekProcessed() {
-
-    }
-
     public long getCurrentPosition()
     {
-       return mExoPlayer.getCurrentPosition();
+        return mExoPlayer.getCurrentPosition();
     }
 
+    /**
+     * This method causes the player to stop playing the video
+     */
     public void pausePlayer()
     {
         mExoPlayer.setPlayWhenReady(false);
         mExoPlayer.getPlaybackState();
     }
+
+    /**
+     * This method resumes the player when the fragment comes to foreground
+     * from the home screen or another activity
+     * @param lastPosition The last position the video was in milliseconds
+     */
     public void startPlayer(final long lastPosition)
     {
 
@@ -259,4 +223,45 @@ public class Player implements com.google.android.exoplayer2.Player.EventListene
         }
 //       addMedia(mVideoURL);
     }
+
+    @Override
+    public void onTimelineChanged(Timeline timeline, Object manifest, int reason) {
+
+    }
+
+    @Override
+    public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
+    }
+
+    @Override
+    public void onLoadingChanged(boolean isLoading) {
+
+    }
+
+    @Override
+    public void onRepeatModeChanged(int repeatMode) {
+
+    }
+
+    @Override
+    public void onShuffleModeEnabledChanged(boolean shuffleModeEnabled) {
+
+    }
+
+    @Override
+    public void onPositionDiscontinuity(int reason) {
+
+    }
+
+    @Override
+    public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {
+
+    }
+
+    @Override
+    public void onSeekProcessed() {
+
+    }
+
+
 }

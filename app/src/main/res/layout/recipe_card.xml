@@ -22,7 +22,7 @@
         android:textSize="14sp"
         mlns:layout_constraintStart_toStartOf="parent"
         mlns:layout_constraintTop_toTopOf="parent"
-        android:text="Name" />
+        tools:text="Name" />
 
     <TextView
         android:id="@+id/tv_recipe_name_value"
@@ -33,7 +33,7 @@
         android:textSize="14sp"
         mlns:layout_constraintStart_toEndOf="@+id/tv_recipe_name_tag"
         mlns:layout_constraintTop_toTopOf="parent"
-        android:text="Merenda" />
+        tools:text="Merenda" />
 
 
     <TextView
@@ -41,7 +41,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:text="Servings"
+        tools:text="Servings"
+        android:text="@string/tv_recipe_servings_tag_text"
         android:textSize="14sp"
         mlns:layout_constraintBaseline_toBaselineOf="@+id/tv_recipe_servings_value"
         mlns:layout_constraintStart_toStartOf="parent" />

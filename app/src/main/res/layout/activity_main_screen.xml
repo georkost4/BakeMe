@@ -15,12 +15,14 @@
     tools:context=".UI.MainScreenActivity">
 
 
+    <!--PlaceHolder for the fragments-->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/fragment_placeholder_recipe_list">
     </FrameLayout>
 
+    <!--This placeholder will hold the nav bar between steps of execution-->
     <FrameLayout
         android:id="@+id/fragment_placeholder_nav_bar"
         android:layout_width="0dp"

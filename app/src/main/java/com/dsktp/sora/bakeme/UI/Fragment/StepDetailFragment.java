@@ -55,11 +55,17 @@ import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
  * The name of the project is BakeMe and it was created as part of
  * UDACITY ND programm.
  */
+
+
+
+/**
+ * Class for inflating a Fragment , specifically a Step Detail Fragment containing a Simple Exo Player view of the
+ * that displays a video about the step of execution clicked .
+ */
 public class StepDetailFragment extends Fragment {
     private final String DEBUG_TAG = "#" + this.getClass().getSimpleName();
     private Step mStepClicked;
     private SimpleExoPlayerView mPlayerView;
-//    private ExoPlayer mExoPlayer;
     private  Player mExoPlayer;
     private long mCurrentPosition = 0;
     private boolean mTwoPane = false;
@@ -73,7 +79,10 @@ public class StepDetailFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //get the two pane variable from the resources
         mTwoPane = getResources().getBoolean(R.bool.twoPane);
+
+        //restore the current position of the video and the Step object from the bundle
         if(savedInstanceState!=null)
         {
             Log.d(DEBUG_TAG,"------RESTORING SAVED INSTANCE VALUES FOR FRAGMENT-------------");
@@ -94,12 +103,15 @@ public class StepDetailFragment extends Fragment {
         {
             mInflatedView = inflater.inflate(R.layout.fragment_recipe_step_detail, container, false);
 
+
+            //if the orientation is portrait and its on phone mode  display the fullDescription textView and also show the navigation bar
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT && !mTwoPane)
             {
-                TextView fullDescriptionTextView = mInflatedView.findViewById(R.id.tv_step_full_description_value);
-                fullDescriptionTextView.setText(mStepClicked.getDescription());
+                //we are in phone mode and in orientation == portrait
+                TextView fullDescriptionTextView = mInflatedView.findViewById(R.id.tv_step_full_description_value); //get a reference to the textview
+                fullDescriptionTextView.setText(mStepClicked.getDescription());  //set the text
 
-                getActivity().findViewById(R.id.fragment_placeholder_nav_bar).setVisibility(View.VISIBLE);
+                getActivity().findViewById(R.id.fragment_placeholder_nav_bar).setVisibility(View.VISIBLE); // show the navigation bar
             }
 
 
@@ -111,48 +123,21 @@ public class StepDetailFragment extends Fragment {
         return mInflatedView;
     }
 
-
+    /**
+     * This method instantiates a Player object that takes care of creating a SimpleExoPlayer object , initiates
+     * the MediaSource and implements the player's Callback methods
+     */
     private void setUpPlayer()
     {
-        mExoPlayer = new Player(getContext(),mPlayerView,mStepClicked.getVideoURL());
+        //instantiate a Player object
+        mExoPlayer = new Player(getContext(),mPlayerView,mStepClicked.getVideoURL()); //todo handle thumnail video url
 
     }
-
-
-//    private void setUpPlayer() {
-//
-//        TrackSelection.Factory videoTrackSelectionFactory = new AdaptiveTrackSelection.Factory(new DefaultBandwidthMeter());
-//        TrackSelector trackSelector = new DefaultTrackSelector(videoTrackSelectionFactory);
-//
-//        mExoPlayer = ExoPlayerFactory.newSimpleInstance(getContext(), trackSelector);
-//
-//        mPlayerView.setPlayer(mExoPlayer);
-//
-//        mExoPlayer.setPlayWhenReady(true);
-//
-//        DefaultExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
-//
-//        DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(getContext(),Util.getUserAgent(getContext(), getActivity().getApplication().getPackageName()), new DefaultBandwidthMeter());
-//
-//        MediaSource mediaSource = new ExtractorMediaSource(Uri.parse(mStepClicked.getVideoURL()), dataSourceFactory, extractorsFactory, null, null);
-//
-//        mExoPlayer.prepare(mediaSource);
-//
-//        mExoPlayer.seekTo(mCurrentPosition);
-//    }
-
-//    private void releasePlayer() {
-//        if(mExoPlayer!=null)
-//        {
-//            mExoPlayer.stop();
-//            mExoPlayer.release();
-//            mExoPlayer = null;
-//        }
-//    }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
+        //Save the current position and the Step to the bundle
         if (mExoPlayer != null)
         {
             outState.putLong("current_pos",mExoPlayer.getCurrentPosition());

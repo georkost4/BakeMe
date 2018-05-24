@@ -89,14 +89,13 @@ public class MyRecipeAdapter extends RecyclerView.Adapter<MyRecipeAdapter.MyReci
         Recipe currentRecipe = mRecipeList.get(position);
         holder.mRecipeServingsTextView.setText(String.valueOf(currentRecipe.getServings()));
         holder.mRecipeNameTextView.setText(currentRecipe.getName());
-        //TODO add placeholder for no image
         //If the URL of the image link us null
         //meaning there is no image then set the imageView
         //with a default placeholder
         if(currentRecipe.getImageURL().equals(""))
         {
            //load default placeholder
-           holder.mRecipeImageImageView.setImageResource(R.drawable.ic_launcher_background); // todo change the placeHolder image
+           holder.mRecipeImageImageView.setImageResource(R.drawable.ic_photo_black_24dp); // todo change the placeHolder image
         }
         else
         {

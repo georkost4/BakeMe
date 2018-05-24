@@ -1,8 +1,25 @@
 <resources>
     <string name="app_name">BakeMe</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!--Manifest Strings-->
     <string name="title_activity_widget_configuration">widgetConfigurationActivity</string>
-    <string name="DETAIL_FR_TAG">detail_fragment_tag</string>
+
+    <!--Configuration activity strings-->
+    <string name="tv_widget_header">List of available recipes.</string>
+
+    <!--Nav bar fragment strings-->
+    <string name="nav_bar_previous_button_text">Previous</string>
+    <string name="nav_bar_next_button_text">Next</string>
+
+    <!--Fragment recipe step detail strings-->
+    <string name="tv_step_full_desc_tag_text">Step Description</string>
+
+    <!--Step Row item strings-->
+    <string name="tv_ingredients_tag_text">List of Ingredients</string>
+    <string name="tv_step_description_tag_text">Step Description</string>
+
+    <!--Recipe card strings-->
+    <string name="tv_recipe_servings_tag_text">Servings</string>
+    <string name="player_error_play_message">CANNOT PLAY....</string>
+    <string name="player_buffering_message">BUFFERING...</string>
 </resources>

@@ -48,7 +48,7 @@ import java.util.ArrayList;
  *
  *
  */
-public class widgetConfigurationActivity extends AppCompatActivity {
+public class WidgetConfigActivity extends AppCompatActivity {
 
 
     int mWidgetId;

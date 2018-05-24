@@ -12,7 +12,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".UI.widgetConfigurationActivity">
+    tools:context=".UI.WidgetConfigActivity">
 
 
     <TextView
@@ -26,6 +26,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:text="@string/tv_widget_header"
         tools:text="List of available recipes" />
 
 
@@ -42,15 +43,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/configuration_tv_header" />
 
-    <TextView
-        android:id="@+id/configuration_empty_view"
-        android:layout_width="120dp"
-        android:layout_height="97dp"
-        android:layout_marginEnd="108dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="172dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/_dynamic"
-        app:layout_constraintTop_toBottomOf="@+id/configuration_tv_header" />
 </android.support.constraint.ConstraintLayout>

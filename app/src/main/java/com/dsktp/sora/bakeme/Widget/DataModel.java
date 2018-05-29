@@ -68,4 +68,18 @@ public class DataModel
         return  userPrefRecipeId;
     }
 
+    /** // todo change this documentation
+     * This method return's the recipe id of the chosen by the user in the widget configuration activity
+     * @param context The context object
+     * @return The id of the recipe chosen at the widget configuration screen
+     */
+    public static String RecipeNameFromPreferences(Context context)
+    {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+
+        String userPrefRecipeName =  sharedPreferences.getString(Constants.WIDGET_CHOSEN_RECIPE_NAME_KEY,"Null");
+        Log.d("DEBUG","/////////////----------RETURNING NAME === " + userPrefRecipeName + "-------///////");
+        return  userPrefRecipeName;
+    }
+
 }

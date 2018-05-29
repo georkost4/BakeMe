@@ -17,11 +17,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/widget_ingredient_row_ingredient_name"
-        tools:text="Milk"/>
+        tools:text="Milk"
+        android:textSize="16sp"
+        android:textStyle="bold"/>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/widget_ingredient_row_ingredient_detail"
-        tools:text="100ml"/>
+        tools:text="100ml"
+        android:textColor="#de6a6a"/>
 
 </LinearLayout>

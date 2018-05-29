@@ -36,6 +36,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -71,9 +72,13 @@ public class DetailFragment extends Fragment
     public DetailFragment(){}
 
 
-    public DetailFragment(Recipe recipe)
-    {
-        mRecipeClicked = recipe;
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        Bundle fragmentArgsBundle = getArguments();
+        mRecipeClicked = fragmentArgsBundle.getParcelable(Constants.DETAIL_FRAGMENT_ARGS_KEY);
+
     }
 
     @Nullable
@@ -89,6 +94,8 @@ public class DetailFragment extends Fragment
 
         //inflate the layout
         View inflatedView = inflater.inflate(R.layout.fragment_recipe_step_list,container,false);
+
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(mRecipeClicked.getName()); // change the title bar name to the recipe name
 
         //set up step rv
         setUpStepRecyclerView(inflatedView);

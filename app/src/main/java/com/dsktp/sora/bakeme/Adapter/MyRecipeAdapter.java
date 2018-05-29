@@ -45,7 +45,7 @@ public class MyRecipeAdapter extends RecyclerView.Adapter<MyRecipeAdapter.MyReci
      */
     public interface recipeClickListener
     {
-        void handleRecipeClicked(int position,ArrayList<Recipe> recipes);
+        void handleRecipeClicked(Recipe clickedRecipe);
     }
 
     /**
@@ -95,14 +95,13 @@ public class MyRecipeAdapter extends RecyclerView.Adapter<MyRecipeAdapter.MyReci
         if(currentRecipe.getImageURL().equals(""))
         {
            //load default placeholder
-           holder.mRecipeImageImageView.setImageResource(R.drawable.ic_photo_black_24dp); // todo change the placeHolder image
+           holder.mRecipeImageImageView.setImageResource(R.drawable.ic_photo_black_24dp); //
         }
         else
         {
             //load the recipe image using Picasso library
             Picasso.get()
                     .load(currentRecipe.getImageURL())
-//                    .error(R.drawable.ic_launcher_background)
                     .into(holder.mRecipeImageImageView);
         }
 
@@ -148,10 +147,9 @@ public class MyRecipeAdapter extends RecyclerView.Adapter<MyRecipeAdapter.MyReci
          * @param v The ViewHolder which was clicked
          */
         @Override
-        public void onClick(View v)
-        {
+        public void onClick(View v) {
             //Delegate the click handling to whoever listen's for this event
-            mListener.handleRecipeClicked(getAdapterPosition(),mRecipeList);
+            mListener.handleRecipeClicked(mRecipeList.get(getAdapterPosition()));
         }
     }
 }

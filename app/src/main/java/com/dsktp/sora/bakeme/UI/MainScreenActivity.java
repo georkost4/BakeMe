@@ -17,8 +17,8 @@
 package com.dsktp.sora.bakeme.UI;
 
 import android.content.Intent;
-import android.os.Parcelable;
 import android.preference.PreferenceManager;
+import android.support.test.espresso.idling.CountingIdlingResource;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -42,7 +42,6 @@ import com.dsktp.sora.bakeme.UI.Fragment.StepDetailFragment;
 import com.dsktp.sora.bakeme.Utils.Constants;
 
 import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
 
 
 /**
@@ -54,14 +53,14 @@ public class MainScreenActivity extends AppCompatActivity implements MyRecipeAda
     private MainScreenController mController;
     private FragmentManager mManager;
     private boolean mTwoPane = false;
-    private MyRecipeAdapter mAdapter;
-    private RecyclerView mRecipeListRV;
     private final String DEBUG_TAG = "#" + getClass().getSimpleName();
-    private LocalRepository mLocalRepository;
 
     private int mCurrentStepIndex;
     private ArrayList<Step> mCurrentStepList;
     private int mCurrentStepListSize;
+
+    private static CountingIdlingResource mIdlingResource;
+
 
     @Override
     protected void onResume()
@@ -71,9 +70,11 @@ public class MainScreenActivity extends AppCompatActivity implements MyRecipeAda
     }
 
     @Override
-    protected void onStart() {
+    protected void onStart()
+    {
         super.onStart();
         Log.d(DEBUG_TAG,"-----------ON START-------------");
+
     }
 
     @Override
@@ -87,6 +88,12 @@ public class MainScreenActivity extends AppCompatActivity implements MyRecipeAda
 
         setUpVariables(); // set up the variable's
 
+        if(savedInstanceState!=null) // restore variables from savedInstanceState budnle
+        {
+            mCurrentStepIndex = savedInstanceState.getInt(Constants.MAIN_SCREEN_PLAYER_CURRENT_STEP_INDEX_KEY); // variable for keeping track of current step inside the video list
+            mCurrentStepListSize = savedInstanceState.getInt(Constants.MAIN_SCREEN_PLAYER_STEP_LIST_SIZE_KEY); // the list size
+            mCurrentStepList = savedInstanceState.getParcelableArrayList(Constants.MAIN_SCREEN_PLAYER_STEP_LIST_KEY); // GET THE arrayList
+        }
 
 
         String action = widgetClickIntent.getAction(); //get the action from the intent
@@ -94,21 +101,21 @@ public class MainScreenActivity extends AppCompatActivity implements MyRecipeAda
         {
             Log.d(DEBUG_TAG,"Handling the user clicked on recipe");
             //get the recipe the user clicked from widget config activity
-            int recipeIDclicked = PreferenceManager.getDefaultSharedPreferences(this).getInt(Constants.WIDGET_CHOSEN_RECIPE_KEY,-1);
-            mLocalRepository.getRecipeById(recipeIDclicked);
+            int recipeIDclick = PreferenceManager.getDefaultSharedPreferences(this).getInt(Constants.WIDGET_CHOSEN_RECIPE_KEY,-1);
+
+            Recipe recipeClicked = LocalRepository.getLocalRepository().getRecipeById(recipeIDclick); //get the recipe from the localRepository
 
 
-            //Make this fragment transaction to create the proper back stack for the widget
-            RecipeListFragment recipeListFragment = new RecipeListFragment(); //TODO RECONSIDER RE-ALLOCATING NEW OBJECT
-            mManager.beginTransaction()
-                    .replace(R.id.fragment_placeholder_recipe_list,recipeListFragment)
-                    .commit();
-
-
-            ArrayList<Recipe> recipes = mController.fetchRecipes();
-            if(recipes==null) Log.e(DEBUG_TAG,"recipes list are empty"); // todo remove this
+            if(mManager.findFragmentByTag(Constants.DETAIL_FRAGMENT_WIDGET_TAG) == null) // if the fragment already exists dont re-create it
+            {
+                //Make this fragment transaction to create the proper back stack for the widget
+                RecipeListFragment recipeListFragment = new RecipeListFragment();
+                mManager.beginTransaction()
+                        .replace(R.id.fragment_placeholder_recipe_list, recipeListFragment, Constants.DETAIL_FRAGMENT_WIDGET_TAG)
+                        .commit();
+            }
             //mock the recipe clicked event
-            handleRecipeClicked(recipeIDclicked,recipes);
+            handleRecipeClicked(recipeClicked);
         }
         else
         {
@@ -132,13 +139,7 @@ public class MainScreenActivity extends AppCompatActivity implements MyRecipeAda
         mController = MainScreenController.getController();
         //create the database
         LocalRepository.getRoomDatabase(this);
-
-//        //get the local repository
-//        mLocalRepository = LocalRepository.getLocalRepository(); //todo TO BE REMOVED UNNECESSARY
-//        //set the local repo to the controller
-//        mController.setLocalRepo(mLocalRepository);
-
-        //get this variable so we can know if we are in tablet mode or phone mode
+        //get a reference to the twoPane variable
         mTwoPane = getResources().getBoolean(R.bool.twoPane);
     }
 
@@ -153,7 +154,7 @@ public class MainScreenActivity extends AppCompatActivity implements MyRecipeAda
         if(savedInstanceState!=null)
         {
             int number = savedInstanceState.getInt(Constants.FRAGMENT_NUMBER_KEY);
-            Log.d(DEBUG_TAG,"--------------------" + number + "-------------"); // TODO REMOVE THIS LINE ON RELEASE
+            Log.d(DEBUG_TAG,"--------------------" + number + "-------------");
             if(number>0) // If the number of the fragment's on the backStack are greater than zero don't do anything
             {
                 //don't re-create the fragment
@@ -165,7 +166,7 @@ public class MainScreenActivity extends AppCompatActivity implements MyRecipeAda
                 if (mManager.findFragmentByTag(Constants.RECIPE_LIST_FRAGMENT_TAG) == null)
                 {
                     // if we dont have already created the fragment create it
-                    RecipeListFragment recipeListFragment = new RecipeListFragment(); //TODO RECONSIDER RE-ALLOCATING NEW OBJECT
+                    RecipeListFragment recipeListFragment = new RecipeListFragment();
                 mManager.beginTransaction()
                         .replace(R.id.fragment_placeholder_recipe_list, recipeListFragment,Constants.RECIPE_LIST_FRAGMENT_TAG)
                         .commit();
@@ -178,7 +179,7 @@ public class MainScreenActivity extends AppCompatActivity implements MyRecipeAda
             {
                 //The first time the app launches has savedInstanceState == null
                 // so "add" the fragment
-                RecipeListFragment recipeListFragment = new RecipeListFragment(); //TODO RECONSIDER RE-ALLOCATING NEW OBJECT
+                RecipeListFragment recipeListFragment = new RecipeListFragment();
                 mManager.beginTransaction()
                         .replace(R.id.fragment_placeholder_recipe_list, recipeListFragment, Constants.RECIPE_LIST_FRAGMENT_TAG)
                         .commit();
@@ -191,17 +192,23 @@ public class MainScreenActivity extends AppCompatActivity implements MyRecipeAda
      * This method handle's the click even't on a Recipe from the list . It replace's the current
      * fragment to the detail Fragment which contain's detail's about the ingredient's and the step's
      * of execution about the clicked Recipe
-     * @param position The position of the RecyclerView which was clicked
-     * @param recipes The  ArrayList with the objects // TODO TO BE REMOVED
+     * @param recipeClicked The recipe object that was clicked inside the RecyclerView
      */
     @Override
-    public void handleRecipeClicked(int position, ArrayList<Recipe> recipes) //TODO remove the arrayList parameter it's useless
+    public void handleRecipeClicked(Recipe recipeClicked)
     {
         // Show recipe detail fragment
         if(mManager.findFragmentByTag(Constants.DETAIL_FRAGMENT_TAG) == null)
         {
             Log.d(DEBUG_TAG,"We dont have a recipe fragment so create it");
-            DetailFragment detailFragment = new DetailFragment(recipes.get(position));
+            DetailFragment detailFragment = new DetailFragment();
+
+            //create a bundle and save the recipe clicked inside there
+            Bundle fragmentArgs = new Bundle();
+            fragmentArgs.putParcelable(Constants.DETAIL_FRAGMENT_ARGS_KEY,recipeClicked);
+            //set the bundle to the fragments arguments
+            detailFragment.setArguments(fragmentArgs);
+
 
             mManager.beginTransaction().replace(R.id.fragment_placeholder_recipe_list, detailFragment, Constants.DETAIL_FRAGMENT_TAG).addToBackStack("").commit();
         }
@@ -283,6 +290,7 @@ public class MainScreenActivity extends AppCompatActivity implements MyRecipeAda
     {
         if(mCurrentStepIndex+1<=mCurrentStepListSize-1) // if the current step index + 1 is less or equal to the size of the list
         {
+            //todo handle the orientation change bug
             //there is a next step
             //show the fragment
             mCurrentStepIndex = mCurrentStepIndex + 1; // the new index is +1
@@ -310,6 +318,19 @@ public class MainScreenActivity extends AppCompatActivity implements MyRecipeAda
         //Get the number of the fragment's who are in the backStack
         int numberOfFragments = mManager.getBackStackEntryCount();
         //put the number to the savedInstance bundle
-        outState.putInt("fragments_number",numberOfFragments); // todo extract string resource
+        outState.putInt(Constants.MAIN_SCREEN_FRAGMENT_NUMBER_SAVED_INSTANCE_KEY,numberOfFragments);
+        outState.putInt(Constants.MAIN_SCREEN_PLAYER_CURRENT_STEP_INDEX_KEY,mCurrentStepIndex); //save the current index
+        outState.putInt(Constants.MAIN_SCREEN_PLAYER_STEP_LIST_SIZE_KEY,mCurrentStepListSize); // save the size of the video list
+        outState.putParcelableArrayList(Constants.MAIN_SCREEN_PLAYER_STEP_LIST_KEY,mCurrentStepList); // save the arrayList containing the steps
+    }
+
+    /**
+     * This method instantiates a CountingIdlingResource object and then returns it
+     * @return The CountingIdlingResource object
+     */
+    public static CountingIdlingResource getIdlingResource()
+    {
+        mIdlingResource = new CountingIdlingResource("DATA_LOADER");
+        return mIdlingResource;
     }
 }

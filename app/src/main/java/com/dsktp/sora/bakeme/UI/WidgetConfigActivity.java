@@ -26,6 +26,7 @@ import com.dsktp.sora.bakeme.Model.Recipe;
 import com.dsktp.sora.bakeme.R;
 import com.dsktp.sora.bakeme.Repository.LocalRepository;
 import com.dsktp.sora.bakeme.Utils.Constants;
+import com.dsktp.sora.bakeme.Widget.RecipeWidgetProvider;
 
 import java.util.ArrayList;
 
@@ -65,17 +66,21 @@ public class WidgetConfigActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_widget_configuration);
 
+        Intent intent = getIntent();
+        Bundle extras = intent.getExtras();
+        if (extras != null)
+        {
+            mWidgetId = extras.getInt(
+                    AppWidgetManager.EXTRA_APPWIDGET_ID,
+                    AppWidgetManager.INVALID_APPWIDGET_ID);
+        }
+
+
+
         showTheAvailableRecipes();
 
-        Intent intentFromWidget = getIntent();
 
-        mWidgetId = intentFromWidget.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID);
 
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
-
-        RemoteViews views = new RemoteViews(getPackageName(),R.layout.recipe_widget_layout);
-
-        appWidgetManager.updateAppWidget(mWidgetId, views);
 
 
 
@@ -89,6 +94,10 @@ public class WidgetConfigActivity extends AppCompatActivity {
         ArrayList<Recipe> recipes = getRecipeFromDb();
         if (recipes != null) // if there is no database the above statement will return NULL so check first
         {
+
+
+
+
             //we have a database and we have recipes available
             //so setup the listview
             setUpListView(recipes);
@@ -125,27 +134,43 @@ public class WidgetConfigActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), toastMessage,Toast.LENGTH_LONG).show();
 
                 //save the id of the recipe to the shared preferences
-                saveTheRecipeToTheUserPreferences(recipes.get(position).getId());
+                saveTheRecipeToTheUserPreferences(recipes.get(position).getId(),recipes.get(position).getName());
+
 
             }
         });
     }
 
     /**
-     * This method saves the id of the chosen recipe id to the shared preferences
+     * This method saves the id of the chosen recipe id to the shared preferences.
+     * It also saves the name of the recipe in a String
      */
-    private void saveTheRecipeToTheUserPreferences(int id) {
+    private void saveTheRecipeToTheUserPreferences(int id,String recipeName) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         Log.d("DEBIG","------------------------------Saving to user pref id with " + id + "------------------------");
 
         sharedPreferences.edit().putInt(Constants.WIDGET_CHOSEN_RECIPE_KEY,id).apply();
 
+        sharedPreferences.edit().putString(Constants.WIDGET_CHOSEN_RECIPE_NAME_KEY,recipeName).apply();
+
+
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getApplicationContext());
+
+
+        RemoteViews views = new RemoteViews(getApplicationContext().getPackageName(), R.layout.recipe_widget_layout);
+        appWidgetManager.updateAppWidget(mWidgetId, views);
+
+        Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE, null, this, RecipeWidgetProvider.class);  //todo examine this block
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, new int[] {mWidgetId});
+        sendBroadcast(intent);
+
         Intent resultValue = new Intent();
         resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mWidgetId);
-
         setResult(RESULT_OK, resultValue);
         finish();
+
+
     }
 
 

@@ -22,4 +22,6 @@
     <string name="tv_recipe_servings_tag_text">Servings</string>
     <string name="player_error_play_message">CANNOT PLAY....</string>
     <string name="player_buffering_message">BUFFERING...</string>
+    <string name="action_bar_text_recipe_list_fragment">List of available recipes</string>
+    <string name="tv_recipe_name_widget">Recipe Name</string>
 </resources>

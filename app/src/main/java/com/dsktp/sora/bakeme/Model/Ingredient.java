@@ -93,10 +93,10 @@ public class Ingredient implements Parcelable
     };
 
     /**
-     * This Recipe constructor creates a Recipe object from  a Parcel object as a parameter
-     * and read's the values for a Reco[e object in the same
-     * order we wrote in writeToParcel() method                     //todo change this documentation
-     * @param in the Parcel object that contains an Recipe object
+     * This Recipe constructor creates a Ingredient object from  a Parcel object as a parameter
+     * and read's the values for a Ingredient object in the same
+     * order we wrote in writeToParcel() method                     /
+     * @param in the Parcel object that contains an Ingredient object
      */
     private Ingredient(Parcel in) {
         setQuantity(in.readDouble());

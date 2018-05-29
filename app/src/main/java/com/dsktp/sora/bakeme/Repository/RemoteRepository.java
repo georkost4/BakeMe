@@ -8,11 +8,13 @@
 
 package com.dsktp.sora.bakeme.Repository;
 
+import android.support.test.espresso.idling.CountingIdlingResource;
 import android.util.Log;
 
 import com.dsktp.sora.bakeme.Controller.MainScreenController;
 import com.dsktp.sora.bakeme.Model.Recipe;
 import com.dsktp.sora.bakeme.Rest.WebService;
+import com.dsktp.sora.bakeme.UI.MainScreenActivity;
 import com.dsktp.sora.bakeme.Utils.Constants;
 
 import java.util.ArrayList;
@@ -38,7 +40,9 @@ public class RemoteRepository implements WebService
 {
 
     private String DEBUG_TAG = "#RemoteRepository.java";
-    private MainScreenController mController = null;
+    private MainScreenController mController;
+
+    private CountingIdlingResource mIdlingResource;
 
 
     /**
@@ -49,13 +53,15 @@ public class RemoteRepository implements WebService
     {
 
        mController = mainScreenController;
+
+       mIdlingResource = MainScreenActivity.getIdlingResource();
     }
 
 
-    //todo to be implemented
-    @Override
-    public Call<List<Recipe>> getRecipes() {
 
+    @Override
+    public Call<List<Recipe>> getRecipes()
+    {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constants.RECIPE_LIST_URL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -63,6 +69,8 @@ public class RemoteRepository implements WebService
         WebService service = retrofit.create(WebService.class);
 
 
+
+        mIdlingResource.increment(); // the asynchronous task beging so increment the counter
         service.getRecipes().enqueue(new Callback<List<Recipe>>() {
             @Override
             public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
@@ -77,12 +85,12 @@ public class RemoteRepository implements WebService
                     mController.saveToLocalRepository(recipeList);
 
 
-                    for (Recipe recipe : recipeList) //todo remove this block
-                    {
-                        Log.d(DEBUG_TAG, "Recipe's id's:" + recipe.getId());
-                    }
+                    mIdlingResource.decrement(); //decrement the idle resource to indicate that the activity is now idle
 
-                } else {
+
+                }
+                else
+                {
                     String errorMessage = response.message();
                     String erroCode = String.valueOf(response.code());
                     Log.e(DEBUG_TAG, errorMessage + " " + erroCode);
@@ -93,9 +101,11 @@ public class RemoteRepository implements WebService
             public void onFailure(Call<List<Recipe>> call, Throwable t) {
                 Log.e(DEBUG_TAG, t.getMessage());
                 t.printStackTrace();
+
+                mIdlingResource.decrement(); //decrement the idle resource to indicate that the activity is now idle
             }
         });
-        return service.getRecipes(); // todo consider to remove and return mull instead
+        return null;
     }
 
 }

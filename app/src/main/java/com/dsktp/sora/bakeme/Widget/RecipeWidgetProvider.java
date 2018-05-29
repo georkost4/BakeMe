@@ -26,9 +26,11 @@ import com.dsktp.sora.bakeme.Utils.Constants;
  * The name of the project is BakeMe and it was created as part of
  * UDACITY ND programm.
  */
+
+
 public class RecipeWidgetProvider extends AppWidgetProvider
 {
-    private static String DEBUG_TAG = "#WidgetProvider.java";
+    private static String DEBUG_TAG = "#RecipeWidgetProvider.java";
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         //update all the widget's on our homescreen
@@ -45,6 +47,11 @@ public class RecipeWidgetProvider extends AppWidgetProvider
 
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.recipe_widget_layout);
+
+        String widgetHeaderText = DataModel.RecipeNameFromPreferences(context) + " Ingredients list:" ;
+        views.setTextViewText(R.id.tv_widget_header,widgetHeaderText); //todo review this update
+
+
 
         views.setRemoteAdapter(R.id.widget_recipe_listview, fillListViewDataIntent);
 

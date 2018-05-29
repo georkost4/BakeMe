@@ -87,7 +87,6 @@ class AppWidgetListView implements RemoteViewsService.RemoteViewsFactory
         String quantityMeasuere = mIngredientList.get(position).getQuantity() + " " + mIngredientList.get(position).getMeasure();
         views.setTextViewText(R.id.widget_ingredient_row_ingredient_detail,quantityMeasuere);
 
-
         //fill the pending intent with data
         Intent fillInIntent = new Intent();
 

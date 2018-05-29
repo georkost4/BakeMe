@@ -44,8 +44,8 @@ public class WidgetUpdateService extends IntentService
 
             if(ACTION_UPDATE_LIST_VIEW.equals(action))
             {
-                handleActionUpdateListView();
                 Log.e(DEBUG_TAG,"-----------------handleActionUpdateListView-----------------");
+                handleActionUpdateListView();
             }
         }
 

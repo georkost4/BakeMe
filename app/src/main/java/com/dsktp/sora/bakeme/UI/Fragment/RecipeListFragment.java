@@ -10,6 +10,7 @@ package com.dsktp.sora.bakeme.UI.Fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -53,9 +54,12 @@ public class RecipeListFragment extends Fragment {
         {
             inflatedView = inflater.inflate(R.layout.fragment_recipe_list, container, false);
 
+
+
             setUpRecyclerView(inflatedView);
         }
 
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.action_bar_text_recipe_list_fragment);
         return inflatedView;
     }
 
@@ -77,7 +81,6 @@ public class RecipeListFragment extends Fragment {
         //the mRecipeList will be null if we don't have a cached list
         if(mRecipeList!=null)
         {
-            Log.e(DEBUG_TAG, "------------RECIPE LIST IS NULL-----------");
             //update the UI
             mController.updateTheUi(mRecipeList);
         }

@@ -13,6 +13,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.dsktp.sora.bakeme.Model.Recipe;
+import com.dsktp.sora.bakeme.Utils.Constants;
 
 import java.util.ArrayList;
 
@@ -50,7 +51,7 @@ public class LocalRepository  {
     {
         if (mDb == null)
         {
-            mDb =  Room.databaseBuilder(context.getApplicationContext(), MyDatabase.class,"recipe.db").allowMainThreadQueries().build(); // TODO CREATE CONSTANT FOR DB NAME and remove the main thread query
+            mDb =  Room.databaseBuilder(context.getApplicationContext(), MyDatabase.class, Constants.DATABASE_NAME).allowMainThreadQueries().build(); // TODO remove the main thread query
         }
         return mDb;
     }
@@ -117,11 +118,13 @@ public class LocalRepository  {
     /**
      * This method check's to determine if we have a local cache of the recipe list
      * available to the database
-     * @return
+     * @return true if there is a local copy at the database for the recipe list
      */
     public boolean checkIfThereIsCachedList() //todo asynctask background query
     {
-        if(checkIfWeHaveDatabase()) {
+        if(checkIfWeHaveDatabase())
+        {
+            Log.d(DEBUG_TAG,"We have a cached list...");
             int rows = mDb.recipeDao().checkIfEmpty();
             Log.d(DEBUG_TAG, "rows returned from check method = " + rows);
             return rows > 0;
@@ -129,6 +132,10 @@ public class LocalRepository  {
         else return false;
     }
 
+    /**
+     * This method checks the instance of MyDatabase  for null
+     * @return true if we have created a local database othewise false
+     */
     public boolean checkIfWeHaveDatabase()
     {
         if(mDb == null)

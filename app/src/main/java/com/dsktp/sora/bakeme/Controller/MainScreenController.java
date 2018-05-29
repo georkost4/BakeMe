@@ -23,6 +23,8 @@
 package com.dsktp.sora.bakeme.Controller;
 
 import android.os.AsyncTask;
+import android.support.test.espresso.IdlingResource;
+import android.support.test.espresso.idling.CountingIdlingResource;
 import android.util.Log;
 
 import com.dsktp.sora.bakeme.Adapter.MyRecipeAdapter;
@@ -57,7 +59,6 @@ public class MainScreenController {
     private LocalRepository mLocalRepo;
     private RemoteRepository mRemoteRepo;
 
-
     /**
      * Private consructor to work along with the getController() method
      * to make usage of the Singleton pattern
@@ -66,7 +67,7 @@ public class MainScreenController {
     {
         //instantiate the repo object's
         mLocalRepo = LocalRepository.getLocalRepository();
-        mRemoteRepo = new RemoteRepository(this);//todo maybe unnesesary instatiation
+        mRemoteRepo = new RemoteRepository(this);
     }
 
     /**
@@ -139,7 +140,12 @@ public class MainScreenController {
         //insert only if there isn't any previously data
         if(!mLocalRepo.checkIfThereIsCachedList())
         {
+            Log.d(DEBUG_TAG,"Saving the list to the local repository....");
             mLocalRepo.saveAllRecipe(recipes);
+        }
+        else
+        {
+            Log.d(DEBUG_TAG,"We already have a copy at the local repository so don't save it again...");
         }
     }
 
@@ -162,8 +168,11 @@ public class MainScreenController {
         else
         {
             //make a request to the remote repo
-            mRemoteRepo.getRecipes(); // todo change the async to synchronous method
+            mRemoteRepo.getRecipes();
         }
         return null;
     }
+
+
+
 }

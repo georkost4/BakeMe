@@ -27,7 +27,9 @@ import com.dsktp.sora.bakeme.Utils.Constants;
  * UDACITY ND programm.
  */
 
-
+/**
+ * This class is one of the core classes that a widget needs for a creation of a widget.
+ */
 public class RecipeWidgetProvider extends AppWidgetProvider
 {
     private static String DEBUG_TAG = "#RecipeWidgetProvider.java";
@@ -38,6 +40,13 @@ public class RecipeWidgetProvider extends AppWidgetProvider
         WidgetUpdateService.startActionUpdateAppWidgets(context);
     }
 
+    /**
+     * This method takes care of creating our remote views for the widget layout , setting up the click intent to handle
+     * the widget item click and the empty view if no data is available
+     * @param context
+     * @param appWidgetManager
+     * @param appId
+     */
     private static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appId)
     {
         Log.e(DEBUG_TAG,"-----------------updateAppWidget called-----------------");
@@ -49,9 +58,7 @@ public class RecipeWidgetProvider extends AppWidgetProvider
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.recipe_widget_layout);
 
         String widgetHeaderText = DataModel.RecipeNameFromPreferences(context) + " Ingredients list:" ;
-        views.setTextViewText(R.id.tv_widget_header,widgetHeaderText); //todo review this update
-
-
+        views.setTextViewText(R.id.tv_widget_header,widgetHeaderText);
 
         views.setRemoteAdapter(R.id.widget_recipe_listview, fillListViewDataIntent);
 
@@ -72,6 +79,13 @@ public class RecipeWidgetProvider extends AppWidgetProvider
         Log.e(DEBUG_TAG,"-----------------This line is executed-----------------");
     }
 
+
+    /**
+     * This method updatess all the widgets on our homescreen
+     * @param context
+     * @param appWidgetManager
+     * @param appWidgetIds
+     */
     public static void updateAllAppWidget(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         for (int appWidgetId : appWidgetIds)
         {

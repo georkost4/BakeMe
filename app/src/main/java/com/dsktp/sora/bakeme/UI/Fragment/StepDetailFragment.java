@@ -97,7 +97,6 @@ public class StepDetailFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        //TODO CHECK TO SEE IF IT RE-CREATES THE VIEW OR IS IT UNNESSESERAY CHECK
         Log.d(DEBUG_TAG,"-------------ON CREATE VIEW------------------");
         if(mInflatedView == null)
         {
@@ -113,12 +112,19 @@ public class StepDetailFragment extends Fragment {
 
                 getActivity().findViewById(R.id.fragment_placeholder_nav_bar).setVisibility(View.VISIBLE); // show the navigation bar
             }
+            else if(mTwoPane)
+            {
+                //we are in phone mode and in orientation == portrait
+                TextView fullDescriptionTextView = mInflatedView.findViewById(R.id.tv_step_full_description_value); //get a reference to the textview
+                fullDescriptionTextView.setText(mStepClicked.getDescription());  //set the text
+
+            }
 
 
             //Set up exo player
             mPlayerView = mInflatedView.findViewById(R.id.simpleExoPlayerView);
 
-            setUpPlayer();
+            setUpPlayer(mInflatedView);
         }
         return mInflatedView;
     }
@@ -126,11 +132,29 @@ public class StepDetailFragment extends Fragment {
     /**
      * This method instantiates a Player object that takes care of creating a SimpleExoPlayer object , initiates
      * the MediaSource and implements the player's Callback methods
+     * @param mInflatedView
      */
-    private void setUpPlayer()
+    private void setUpPlayer(View mInflatedView)
     {
         //instantiate a Player object
-        mExoPlayer = new Player(getContext(),mPlayerView,mStepClicked.getVideoURL()); //todo handle thumnail video url
+        if(mStepClicked.getVideoURL().equals("") && mStepClicked.getThumbnailURL().equals(""))
+        {
+            //there is no video available for this Step
+            mInflatedView.findViewById(R.id.state_holder).setVisibility(View.VISIBLE);
+            TextView textView = mInflatedView.findViewById(R.id.state_text);
+            textView.setText(R.string.no_video_available_text);
+        }
+        else if ( mStepClicked.getVideoURL().equals(""))
+        {
+            //use the thumbnail url
+            mExoPlayer = new Player(getContext(),mPlayerView,mStepClicked.getThumbnailURL());
+        }
+        else if(mStepClicked.getThumbnailURL().equals(""))
+        {
+            //use the video url
+            mExoPlayer = new Player(getContext(),mPlayerView,mStepClicked.getVideoURL());
+        }
+
 
     }
 
@@ -148,8 +172,11 @@ public class StepDetailFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(DEBUG_TAG,"Resuming player....");
-        mExoPlayer.startPlayer(mCurrentPosition);
+        if(mExoPlayer!=null)
+        {
+            Log.d(DEBUG_TAG,"Resuming player....");
+            mExoPlayer.startPlayer(mCurrentPosition);
+        }
     }
 
 
@@ -157,8 +184,10 @@ public class StepDetailFragment extends Fragment {
     public void onPause()
     {
         super.onPause();
-        Log.d(DEBUG_TAG,"Pausing player...");
-        mExoPlayer.pausePlayer();
+        if (mExoPlayer!=null) {
+            Log.d(DEBUG_TAG,"Pausing player...");
+            mExoPlayer.pausePlayer();
+        }
     }
 
     @Override
@@ -174,8 +203,10 @@ public class StepDetailFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.d(DEBUG_TAG,"--------RELEASING THE EXO PLAYER RESOURCES---------");
-        mExoPlayer.releasePlayer();
+        if (mExoPlayer!=null) {
+            Log.d(DEBUG_TAG,"--------RELEASING THE EXO PLAYER RESOURCES---------");
+            mExoPlayer.releasePlayer();
+        }
     }
 }
 

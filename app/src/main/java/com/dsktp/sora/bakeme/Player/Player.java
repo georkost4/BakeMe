@@ -212,16 +212,9 @@ public class Player implements com.google.android.exoplayer2.Player.EventListene
 
         if (mExoPlayer!=null)
         {
-            Runnable thread = new Runnable() {
-                @Override
-                public void run() {
-                    addMedia(mVideoURL);
-                    mExoPlayer.seekTo(lastPosition);
-                }
-            };
-            thread.run();
+            addMedia(mVideoURL);
+            mExoPlayer.seekTo(lastPosition);
         }
-//       addMedia(mVideoURL);
     }
 
     @Override

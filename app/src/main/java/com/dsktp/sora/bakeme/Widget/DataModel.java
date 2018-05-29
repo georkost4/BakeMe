@@ -68,10 +68,10 @@ public class DataModel
         return  userPrefRecipeId;
     }
 
-    /** // todo change this documentation
-     * This method return's the recipe id of the chosen by the user in the widget configuration activity
+    /**
+     * This method return's the recipe name of the chosen by the user in the widget configuration activity
      * @param context The context object
-     * @return The id of the recipe chosen at the widget configuration screen
+     * @return The String object containing the recipe name of chosen at the widget configuration screen
      */
     public static String RecipeNameFromPreferences(Context context)
     {

@@ -28,7 +28,9 @@ import java.util.ArrayList;
  * UDACITY ND programm.
  */
 
-
+/**
+ * This class is creating the list view item by creating a AppWidgetListView object which implements a RemoteView factory class
+ */
 public class ListViewRemoteViewsService extends RemoteViewsService
 {
     public String DEBUG_TAG = "#" + this.getClass().getSimpleName();

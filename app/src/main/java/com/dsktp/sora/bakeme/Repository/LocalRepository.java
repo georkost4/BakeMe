@@ -8,8 +8,10 @@
 
 package com.dsktp.sora.bakeme.Repository;
 
+import android.annotation.SuppressLint;
 import android.arch.persistence.room.Room;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import com.dsktp.sora.bakeme.Model.Recipe;
@@ -51,7 +53,7 @@ public class LocalRepository  {
     {
         if (mDb == null)
         {
-            mDb =  Room.databaseBuilder(context.getApplicationContext(), MyDatabase.class, Constants.DATABASE_NAME).allowMainThreadQueries().build(); // TODO remove the main thread query
+            mDb =  Room.databaseBuilder(context.getApplicationContext(), MyDatabase.class, Constants.DATABASE_NAME).allowMainThreadQueries().build();
         }
         return mDb;
     }
@@ -76,9 +78,9 @@ public class LocalRepository  {
 
     /**
      * Method for saving a single Recipe to the database
-     * @param recipe
+     * @param recipe The Recipe object to save
      */
-    public void saveRecipe(Recipe recipe)  //todo asynctask background query
+    public void saveRecipe( Recipe recipe)
     {
         mDb.recipeDao().insertRecipe(recipe);
     }
@@ -89,7 +91,7 @@ public class LocalRepository  {
      * @param recipeID The id of the recipe to return
      * @return The Recipe object
      */
-    public Recipe getRecipeById(int recipeID) //todo asynctask background query
+    public Recipe getRecipeById(final int recipeID)
     {
         return mDb.recipeDao().getRecipeById(recipeID);
     }
@@ -99,7 +101,7 @@ public class LocalRepository  {
      * This method return's all the Recipe object's stored in the database
      * @return ArrayList<Recipe> with all recipe object's from the database
      */
-    public ArrayList<Recipe> getAllRecipes() //todo asynctask background query
+    public ArrayList<Recipe> getAllRecipes()
     {
         Log.d(DEBUG_TAG,"Returning cached list from local repo...");
         return (ArrayList<Recipe>) mDb.recipeDao().getAllRecipes();
@@ -110,7 +112,7 @@ public class LocalRepository  {
      * database
      * @param recipes The list with the Recipe object's
      */
-    public void saveAllRecipe(ArrayList<Recipe> recipes) //todo asynctask background query
+    public void saveAllRecipe(ArrayList<Recipe> recipes)
     {
         mDb.recipeDao().insertAllRecipes(recipes);
     }
@@ -120,7 +122,7 @@ public class LocalRepository  {
      * available to the database
      * @return true if there is a local copy at the database for the recipe list
      */
-    public boolean checkIfThereIsCachedList() //todo asynctask background query
+    public boolean checkIfThereIsCachedList()
     {
         if(checkIfWeHaveDatabase())
         {
@@ -149,6 +151,5 @@ public class LocalRepository  {
             return true;
         }
     }
-
 
 }

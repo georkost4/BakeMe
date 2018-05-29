@@ -24,4 +24,7 @@
     <string name="player_buffering_message">BUFFERING...</string>
     <string name="action_bar_text_recipe_list_fragment">List of available recipes</string>
     <string name="tv_recipe_name_widget">Recipe Name</string>
+    <string name="no_video_available_text">No available video for this Step</string>
+    <string name="next_video_button_text">There is no next step to navigate to.</string>
+    <string name="previous_button_video_text">There is no previous step to navigate to.</string>
 </resources>

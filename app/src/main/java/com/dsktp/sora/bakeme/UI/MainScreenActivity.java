@@ -276,7 +276,7 @@ public class MainScreenActivity extends AppCompatActivity implements MyRecipeAda
         else
         {
             //This is the first step so show a toast informing the user
-            Toast.makeText(this,"There is no previous step to navigate to.",Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.previous_button_video_text,Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -290,7 +290,6 @@ public class MainScreenActivity extends AppCompatActivity implements MyRecipeAda
     {
         if(mCurrentStepIndex+1<=mCurrentStepListSize-1) // if the current step index + 1 is less or equal to the size of the list
         {
-            //todo handle the orientation change bug
             //there is a next step
             //show the fragment
             mCurrentStepIndex = mCurrentStepIndex + 1; // the new index is +1
@@ -301,7 +300,7 @@ public class MainScreenActivity extends AppCompatActivity implements MyRecipeAda
         else
         {
             //there is not a next step so inform the user with a toast
-            Toast.makeText(this,"There is no next step to navigate to.",Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.next_video_button_text,Toast.LENGTH_SHORT).show();
         }
     }
 

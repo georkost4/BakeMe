@@ -70,16 +70,10 @@ public class WidgetConfigActivity extends AppCompatActivity {
         Bundle extras = intent.getExtras();
         if (extras != null)
         {
-            mWidgetId = extras.getInt(
-                    AppWidgetManager.EXTRA_APPWIDGET_ID,
-                    AppWidgetManager.INVALID_APPWIDGET_ID);
+            mWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID,  AppWidgetManager.INVALID_APPWIDGET_ID);
         }
 
-
-
         showTheAvailableRecipes();
-
-
 
 
 
@@ -94,10 +88,6 @@ public class WidgetConfigActivity extends AppCompatActivity {
         ArrayList<Recipe> recipes = getRecipeFromDb();
         if (recipes != null) // if there is no database the above statement will return NULL so check first
         {
-
-
-
-
             //we have a database and we have recipes available
             //so setup the listview
             setUpListView(recipes);
@@ -157,14 +147,16 @@ public class WidgetConfigActivity extends AppCompatActivity {
 
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getApplicationContext());
 
-
+        //create the UI of the Widget
         RemoteViews views = new RemoteViews(getApplicationContext().getPackageName(), R.layout.recipe_widget_layout);
         appWidgetManager.updateAppWidget(mWidgetId, views);
 
-        Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE, null, this, RecipeWidgetProvider.class);  //todo examine this block
+        //send a broadcast to the widget manager to update the UI
+        Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE, null, this, RecipeWidgetProvider.class);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, new int[] {mWidgetId});
         sendBroadcast(intent);
 
+        //set the result intent to OK and finish the activity
         Intent resultValue = new Intent();
         resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mWidgetId);
         setResult(RESULT_OK, resultValue);

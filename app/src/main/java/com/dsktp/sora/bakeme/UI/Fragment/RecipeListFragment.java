@@ -77,7 +77,7 @@ public class RecipeListFragment extends Fragment {
         //to update the UI
         mController.setAdapter(mAdapter);
         //get the recipe list form repository
-        mRecipeList = mController.fetchRecipes(); //todo fix this statement
+        mRecipeList = mController.fetchRecipes();
         //the mRecipeList will be null if we don't have a cached list
         if(mRecipeList!=null)
         {

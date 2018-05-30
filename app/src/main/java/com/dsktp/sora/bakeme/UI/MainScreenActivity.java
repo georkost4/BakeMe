@@ -21,10 +21,12 @@ import android.preference.PreferenceManager;
 import android.support.test.espresso.idling.CountingIdlingResource;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -88,11 +90,18 @@ public class MainScreenActivity extends AppCompatActivity implements MyRecipeAda
 
         setUpVariables(); // set up the variable's
 
+
+
         if(savedInstanceState!=null) // restore variables from savedInstanceState budnle
         {
             mCurrentStepIndex = savedInstanceState.getInt(Constants.MAIN_SCREEN_PLAYER_CURRENT_STEP_INDEX_KEY); // variable for keeping track of current step inside the video list
             mCurrentStepListSize = savedInstanceState.getInt(Constants.MAIN_SCREEN_PLAYER_STEP_LIST_SIZE_KEY); // the list size
             mCurrentStepList = savedInstanceState.getParcelableArrayList(Constants.MAIN_SCREEN_PLAYER_STEP_LIST_KEY); // GET THE arrayList
+
+            if (mManager.getBackStackEntryCount() > 0) getSupportActionBar().setDisplayHomeAsUpEnabled(true); // if the device rotates and has at least one fragment in the back stack show the button
+
+            Log.d(DEBUG_TAG,"Stack count = " + mManager.getBackStackEntryCount());
+
         }
 
 
@@ -127,8 +136,25 @@ public class MainScreenActivity extends AppCompatActivity implements MyRecipeAda
 
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        int itemID = item.getItemId();
+        switch (itemID)
+        {
+            case android.R.id.home:
+            {
+                Log.d(DEBUG_TAG,"------------HANDLING UP NAVIGATION-----------");
+                mManager.popBackStack(); // pop the recent fragment from the stack
+                if(mManager.getBackStackEntryCount() == 1) getSupportActionBar().setDisplayHomeAsUpEnabled(false); // if there is no fragment in the backstack disable the button
+                return true;
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     /**
-     * This method set's up some eseential variables we will
+     * This method set's up some essential variables we will
      * need later.
      */
     private void setUpVariables()
@@ -163,6 +189,7 @@ public class MainScreenActivity extends AppCompatActivity implements MyRecipeAda
             // if there aren't any fragment's on the backstack meaning the user navigated back to the first fragment
             // Recreate it
             {
+
                 if (mManager.findFragmentByTag(Constants.RECIPE_LIST_FRAGMENT_TAG) == null)
                 {
                     // if we dont have already created the fragment create it
@@ -212,6 +239,8 @@ public class MainScreenActivity extends AppCompatActivity implements MyRecipeAda
 
             mManager.beginTransaction().replace(R.id.fragment_placeholder_recipe_list, detailFragment, Constants.DETAIL_FRAGMENT_TAG).addToBackStack("").commit();
         }
+        //show the up button navigation
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
     }
 

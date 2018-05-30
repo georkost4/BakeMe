@@ -35,6 +35,7 @@ package com.dsktp.sora.bakeme.UI.Fragment;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -70,6 +71,7 @@ public class StepDetailFragment extends Fragment {
     private long mCurrentPosition = 0;
     private boolean mTwoPane = false;
     private View mInflatedView = null;
+    private Boolean mVideoPlayState;
 
     public StepDetailFragment(){}
     public StepDetailFragment(Step mStepClicked) {
@@ -88,6 +90,7 @@ public class StepDetailFragment extends Fragment {
             Log.d(DEBUG_TAG,"------RESTORING SAVED INSTANCE VALUES FOR FRAGMENT-------------");
             mCurrentPosition = savedInstanceState.getLong("current_pos");
             mStepClicked = savedInstanceState.getParcelable("step_clicked");
+            mVideoPlayState = savedInstanceState.getBoolean("video_state");
         }
 
     }
@@ -161,11 +164,13 @@ public class StepDetailFragment extends Fragment {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
+
+        outState.putParcelable("step_clicked",mStepClicked);
         //Save the current position and the Step to the bundle
         if (mExoPlayer != null)
         {
             outState.putLong("current_pos",mExoPlayer.getCurrentPosition());
-            outState.putParcelable("step_clicked",mStepClicked);
+            outState.putBoolean("video_state",mExoPlayer.getPlayWhenReady());
         }
     }
 

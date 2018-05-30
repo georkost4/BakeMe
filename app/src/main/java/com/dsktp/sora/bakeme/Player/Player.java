@@ -217,6 +217,15 @@ public class Player implements com.google.android.exoplayer2.Player.EventListene
         }
     }
 
+    /**
+     * Simple getter method
+     * @return
+     */
+    public boolean getPlayWhenReady()
+    {
+        return mExoPlayer.getPlayWhenReady();
+    }
+
     @Override
     public void onTimelineChanged(Timeline timeline, Object manifest, int reason) {
 
@@ -255,6 +264,7 @@ public class Player implements com.google.android.exoplayer2.Player.EventListene
     public void onSeekProcessed() {
 
     }
+
 
 
 }

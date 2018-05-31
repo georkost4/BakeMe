@@ -98,7 +98,8 @@ public class MainScreenActivity extends AppCompatActivity implements MyRecipeAda
             mCurrentStepListSize = savedInstanceState.getInt(Constants.MAIN_SCREEN_PLAYER_STEP_LIST_SIZE_KEY); // the list size
             mCurrentStepList = savedInstanceState.getParcelableArrayList(Constants.MAIN_SCREEN_PLAYER_STEP_LIST_KEY); // GET THE arrayList
 
-            if (mManager.getBackStackEntryCount() > 0) getSupportActionBar().setDisplayHomeAsUpEnabled(true); // if the device rotates and has at least one fragment in the back stack show the button
+            if (mManager.getBackStackEntryCount() > 0) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            else getSupportActionBar().setDisplayHomeAsUpEnabled(false);// if the device rotates and has at least one fragment in the back stack show the button
 
             Log.d(DEBUG_TAG,"Stack count = " + mManager.getBackStackEntryCount());
 
@@ -146,7 +147,6 @@ public class MainScreenActivity extends AppCompatActivity implements MyRecipeAda
             {
                 Log.d(DEBUG_TAG,"------------HANDLING UP NAVIGATION-----------");
                 mManager.popBackStack(); // pop the recent fragment from the stack
-                if(mManager.getBackStackEntryCount() == 1) getSupportActionBar().setDisplayHomeAsUpEnabled(false); // if there is no fragment in the backstack disable the button
                 return true;
             }
         }
@@ -257,13 +257,15 @@ public class MainScreenActivity extends AppCompatActivity implements MyRecipeAda
     {
         // Show recipe detail fragment
         StepDetailFragment stepDetailFragment = new StepDetailFragment(stepClicked);
-        NavBarFragment navBarFragment = new NavBarFragment();
+
 
         //show navigation  bar (previous/next) step  if  in phone mode to
         if(!mTwoPane)
         {
+
             if(mManager.findFragmentByTag(Constants.STEP_DETAIL_FRAGMENT_TAG) == null) // create the fragments
             {
+                NavBarFragment navBarFragment = new NavBarFragment(); // create a new navbar fragment instance
                 //save the step list of the clicked recipe
                 //save the index of the current step clicked
                 //to use later in navigation bar
@@ -271,7 +273,7 @@ public class MainScreenActivity extends AppCompatActivity implements MyRecipeAda
                 mCurrentStepList = stepList;
                 mCurrentStepListSize = mCurrentStepList.size();
 
-                //show the fragment
+                //show the navigation bar fragment
                 mManager.beginTransaction()
                         .replace(R.id.fragment_placeholder_recipe_list, stepDetailFragment, Constants.STEP_DETAIL_FRAGMENT_TAG)
                         .add(R.id.fragment_placeholder_nav_bar, navBarFragment, Constants.NAVIGATION_BAR_FRAGMENT_TAG)
@@ -285,6 +287,7 @@ public class MainScreenActivity extends AppCompatActivity implements MyRecipeAda
             mManager.beginTransaction().replace(R.id.right_part_placeholder, stepDetailFragment)
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                     .commit();
+
         }
     }
 

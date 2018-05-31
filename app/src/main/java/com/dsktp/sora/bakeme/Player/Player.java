@@ -62,7 +62,8 @@ public class Player implements com.google.android.exoplayer2.Player.EventListene
         this.mVideoURL = recipe_video_url;
 
         init_player();
-        addMedia(mVideoURL);
+
+        startPlayer(0,true);
 
     }
 
@@ -105,7 +106,6 @@ public class Player implements com.google.android.exoplayer2.Player.EventListene
                 dataSourceFactory, extractorsFactory, null, null);
 
         mExoPlayer.prepare(mMediaSource);
-        mExoPlayer.setPlayWhenReady(true);
 
     }
 
@@ -206,14 +206,16 @@ public class Player implements com.google.android.exoplayer2.Player.EventListene
      * This method resumes the player when the fragment comes to foreground
      * from the home screen or another activity
      * @param lastPosition The last position the video was in milliseconds
+     * @param playWhenReady Play when ready variable
      */
-    public void startPlayer(final long lastPosition)
+    public void startPlayer(final long lastPosition, Boolean playWhenReady)
     {
 
         if (mExoPlayer!=null)
         {
             addMedia(mVideoURL);
             mExoPlayer.seekTo(lastPosition);
+            mExoPlayer.setPlayWhenReady(playWhenReady);
         }
     }
 

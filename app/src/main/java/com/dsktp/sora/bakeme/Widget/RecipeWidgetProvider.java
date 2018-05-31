@@ -36,7 +36,7 @@ public class RecipeWidgetProvider extends AppWidgetProvider
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         //update all the widget's on our homescreen
-        Log.e(DEBUG_TAG,"-----------------onUpdate called-----------------");
+        Log.d(DEBUG_TAG,"-----------------onUpdate called-----------------");
         WidgetUpdateService.startActionUpdateAppWidgets(context);
     }
 
@@ -49,7 +49,7 @@ public class RecipeWidgetProvider extends AppWidgetProvider
      */
     private static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appId)
     {
-        Log.e(DEBUG_TAG,"-----------------updateAppWidget called-----------------");
+        Log.d(DEBUG_TAG,"-----------------updateAppWidget called-----------------");
         // Create an Intent to launch MainActivity when clicked
         Intent fillListViewDataIntent = new Intent(context, ListViewRemoteViewsService.class);
 
@@ -76,7 +76,6 @@ public class RecipeWidgetProvider extends AppWidgetProvider
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appId, views);
-        Log.e(DEBUG_TAG,"-----------------This line is executed-----------------");
     }
 
 

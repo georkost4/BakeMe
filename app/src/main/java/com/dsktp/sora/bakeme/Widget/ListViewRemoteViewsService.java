@@ -37,7 +37,7 @@ public class ListViewRemoteViewsService extends RemoteViewsService
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent)
     {
-        Log.e(DEBUG_TAG,"-----------Creating new AppWidgetListView object--------");
+        Log.d(DEBUG_TAG,"-----------Creating new AppWidgetListView object--------");
 
         return new AppWidgetListView (this.getApplicationContext(), DataModel.getDataFromDatabase(getApplicationContext()));
     }
@@ -54,7 +54,7 @@ class AppWidgetListView implements RemoteViewsService.RemoteViewsFactory
     {
         mContext = applicationContext;
         mIngredientList = dataList;
-        Log.e(DEBUG_TAG,"-----------------updateAppWidget inside Contructor-----------------");
+        Log.d(DEBUG_TAG,"-----------------updateAppWidget inside Contructor-----------------");
     }
 
     @Override
@@ -75,14 +75,14 @@ class AppWidgetListView implements RemoteViewsService.RemoteViewsFactory
     @Override
     public int getCount()
     {
-        Log.e(DEBUG_TAG,"Ingredients list count = " + mIngredientList.size());
+        Log.d(DEBUG_TAG,"Ingredients list count = " + mIngredientList.size());
         return mIngredientList.size();
     }
 
     @Override
     public RemoteViews getViewAt(int position)
     {
-        Log.e(DEBUG_TAG,"getViewAt is called....");
+        Log.d(DEBUG_TAG,"getViewAt is called....");
         RemoteViews views = new RemoteViews(mContext.getPackageName(), R.layout.widget_ingredient_row);
 
         views.setTextViewText(R.id.widget_ingredient_row_ingredient_name, mIngredientList.get(position).getIngredient());

@@ -50,12 +50,12 @@
         tools:listitem="@layout/ingredient_row_list" />
 
     <android.support.v7.widget.RecyclerView
+        android:layout_below="@+id/barrier_view"
         android:id="@+id/rv_recipe_step_description"
-        android:layout_width="wrap_content"
-        android:layout_height="305dp"
+        android:layout_width="match_parent"
+        android:layout_height="410dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        android:layout_marginBottom="15dp"
         android:clipChildren="true"
         android:clipToPadding="false"
         app:layout_constraintBottom_toBottomOf="parent"

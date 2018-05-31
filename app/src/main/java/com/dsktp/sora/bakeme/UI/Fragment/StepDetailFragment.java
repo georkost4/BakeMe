@@ -71,7 +71,7 @@ public class StepDetailFragment extends Fragment {
     private long mCurrentPosition = 0;
     private boolean mTwoPane = false;
     private View mInflatedView = null;
-    private Boolean mVideoPlayState;
+    private Boolean mVideoPlayState = true;
 
     public StepDetailFragment(){}
     public StepDetailFragment(Step mStepClicked) {
@@ -115,7 +115,7 @@ public class StepDetailFragment extends Fragment {
 
                 getActivity().findViewById(R.id.fragment_placeholder_nav_bar).setVisibility(View.VISIBLE); // show the navigation bar
             }
-            else if(mTwoPane)
+            else if(mTwoPane) // if we are in tablet mode show the full description tetView
             {
                 //we are in phone mode and in orientation == portrait
                 TextView fullDescriptionTextView = mInflatedView.findViewById(R.id.tv_step_full_description_value); //get a reference to the textview
@@ -139,31 +139,28 @@ public class StepDetailFragment extends Fragment {
      */
     private void setUpPlayer(View mInflatedView)
     {
+        Log.d(DEBUG_TAG,"-----------Setting up player--------------");
         //instantiate a Player object
-        if(mStepClicked.getVideoURL().equals("") && mStepClicked.getThumbnailURL().equals(""))
+        if(mStepClicked.getVideoURL().equals("")) // if no video is available show a message
         {
             //there is no video available for this Step
             mInflatedView.findViewById(R.id.state_holder).setVisibility(View.VISIBLE);
             TextView textView = mInflatedView.findViewById(R.id.state_text);
             textView.setText(R.string.no_video_available_text);
         }
-        else if ( mStepClicked.getVideoURL().equals(""))
+        else //show the video
         {
             //use the thumbnail url
-            mExoPlayer = new Player(getContext(),mPlayerView,mStepClicked.getThumbnailURL());
-        }
-        else if(mStepClicked.getThumbnailURL().equals(""))
-        {
-            //use the video url
             mExoPlayer = new Player(getContext(),mPlayerView,mStepClicked.getVideoURL());
         }
-
 
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
+        Log.d(DEBUG_TAG,"------------SAVING STATE INSIDE BUNDLE --------------");
+
 
         outState.putParcelable("step_clicked",mStepClicked);
         //Save the current position and the Step to the bundle
@@ -180,7 +177,7 @@ public class StepDetailFragment extends Fragment {
         if(mExoPlayer!=null)
         {
             Log.d(DEBUG_TAG,"Resuming player....");
-            mExoPlayer.startPlayer(mCurrentPosition);
+            mExoPlayer.startPlayer(mCurrentPosition,mVideoPlayState);
         }
     }
 
@@ -190,20 +187,15 @@ public class StepDetailFragment extends Fragment {
     {
         super.onPause();
         if (mExoPlayer!=null) {
-            Log.d(DEBUG_TAG,"Pausing player...");
-            mExoPlayer.pausePlayer();
+            Log.d(DEBUG_TAG,"--------STOPPING THE EXO PLAYER RESOURCES---------");
+            mExoPlayer.stopPlayer();
+            //save the variables when the app goes to background
+            //to restore the player state gracefully
+            mCurrentPosition = mExoPlayer.getCurrentPosition();
+            mVideoPlayState = mExoPlayer.getPlayWhenReady();
         }
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        if(mExoPlayer!=null)
-        {
-            Log.d(DEBUG_TAG,"--------STOPPING THE EXO PLAYER RESOURCES---------");
-            mExoPlayer.stopPlayer();
-        }
-    }
 
     @Override
     public void onDestroy() {

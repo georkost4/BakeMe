@@ -12,13 +12,17 @@ package com.dsktp.sora.bakeme.Adapter;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.dsktp.sora.bakeme.Model.Step;
 import com.dsktp.sora.bakeme.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -37,6 +41,7 @@ import javax.security.auth.callback.UnsupportedCallbackException;
  */
 public class MyStepAdapter extends RecyclerView.Adapter<MyStepAdapter.MyStepViewHolder> {
 
+    private static final String DEBUG_TAG = "#MyStepAdapter.java";
     private ArrayList<Step> mStepList;
     private StepClickListener mListener;
 
@@ -91,6 +96,14 @@ public class MyStepAdapter extends RecyclerView.Adapter<MyStepAdapter.MyStepView
     public void onBindViewHolder(@NonNull MyStepViewHolder holder, int position) {
         Step currentStep = mStepList.get(position); // Get a reference to the current Step object from the list
         holder.mStepDescriptionTextView.setText(currentStep.getShortDescription()); // set The value
+        if(!TextUtils.isEmpty(currentStep.getThumbnailURL()))
+        {
+            //if there is a thumbnail url show the image
+            Picasso.get()
+                    .load(currentStep.getThumbnailURL())
+                    .placeholder(android.R.drawable.ic_menu_report_image) // load the default if the loading fails
+                    .into(holder.mStepDescritpionThumbnail);
+        }
     }
 
     /**
@@ -111,6 +124,7 @@ public class MyStepAdapter extends RecyclerView.Adapter<MyStepAdapter.MyStepView
     public class MyStepViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private TextView mStepDescriptionTextView;
+        private ImageView mStepDescritpionThumbnail;
 
         /**
          * Default constructor
@@ -120,6 +134,7 @@ public class MyStepAdapter extends RecyclerView.Adapter<MyStepAdapter.MyStepView
             super(itemView);
             //Get a reference
             mStepDescriptionTextView = itemView.findViewById(R.id.tv_step_description_value);
+            mStepDescritpionThumbnail = itemView.findViewById(R.id.iv_step_detail_image);
             //Set the ViewHOlder clickListener
             itemView.setOnClickListener(this);
         }

@@ -60,6 +60,8 @@ public class RecipeListFragment extends Fragment {
         }
 
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.action_bar_text_recipe_list_fragment);
+        //disable up button
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         return inflatedView;
     }
 

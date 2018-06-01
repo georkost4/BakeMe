@@ -190,17 +190,13 @@ public class Player implements com.google.android.exoplayer2.Player.EventListene
 
     public long getCurrentPosition()
     {
-        return mExoPlayer.getCurrentPosition();
+        if(mExoPlayer!=null) {
+            return mExoPlayer.getCurrentPosition();
+        }
+        return 0;
     }
 
-    /**
-     * This method causes the player to stop playing the video
-     */
-    public void pausePlayer()
-    {
-        mExoPlayer.setPlayWhenReady(false);
-        mExoPlayer.getPlaybackState();
-    }
+
 
     /**
      * This method resumes the player when the fragment comes to foreground
@@ -225,7 +221,11 @@ public class Player implements com.google.android.exoplayer2.Player.EventListene
      */
     public boolean getPlayWhenReady()
     {
-        return mExoPlayer.getPlayWhenReady();
+        if (mExoPlayer!=null)
+        {
+            return mExoPlayer.getPlayWhenReady();
+        }
+        return false;
     }
 
     @Override

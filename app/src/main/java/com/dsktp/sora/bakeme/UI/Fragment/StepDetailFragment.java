@@ -35,7 +35,6 @@ package com.dsktp.sora.bakeme.UI.Fragment;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -67,11 +66,12 @@ public class StepDetailFragment extends Fragment {
     private final String DEBUG_TAG = "#" + this.getClass().getSimpleName();
     private Step mStepClicked;
     private SimpleExoPlayerView mPlayerView;
-    private  Player mExoPlayer;
+    private  Player mPlayer;
     private long mCurrentPosition = 0;
     private boolean mTwoPane = false;
     private View mInflatedView = null;
     private Boolean mVideoPlayState = true;
+    private boolean mNeedsSetUp = true;
 
     public StepDetailFragment(){}
     public StepDetailFragment(Step mStepClicked) {
@@ -127,7 +127,7 @@ public class StepDetailFragment extends Fragment {
             //Set up exo player
             mPlayerView = mInflatedView.findViewById(R.id.simpleExoPlayerView);
 
-            setUpPlayer(mInflatedView);
+//            if(mNeedsSetUp) setUpPlayer(mInflatedView); // setup the player only if the player instance is null
         }
         return mInflatedView;
     }
@@ -151,7 +151,8 @@ public class StepDetailFragment extends Fragment {
         else //show the video
         {
             //use the thumbnail url
-            mExoPlayer = new Player(getContext(),mPlayerView,mStepClicked.getVideoURL());
+            mPlayer = new Player(getContext(),mPlayerView,mStepClicked.getVideoURL());
+            mNeedsSetUp = false; // set to false cause the player is already set up
         }
 
     }
@@ -164,20 +165,21 @@ public class StepDetailFragment extends Fragment {
 
         outState.putParcelable("step_clicked",mStepClicked);
         //Save the current position and the Step to the bundle
-        if (mExoPlayer != null)
+        if (mPlayer != null)
         {
-            outState.putLong("current_pos",mExoPlayer.getCurrentPosition());
-            outState.putBoolean("video_state",mExoPlayer.getPlayWhenReady());
+            outState.putLong("current_pos", mPlayer.getCurrentPosition()); // save the
+            outState.putBoolean("video_state", mPlayer.getPlayWhenReady()); // save the player state
         }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if(mExoPlayer!=null)
+        if(mNeedsSetUp) // check the boolean if the player needs to be set up
         {
-            Log.d(DEBUG_TAG,"Resuming player....");
-            mExoPlayer.startPlayer(mCurrentPosition,mVideoPlayState);
+            Log.d(DEBUG_TAG,"Setting up player....");
+            setUpPlayer(mInflatedView);
+            mPlayer.startPlayer(mCurrentPosition,mVideoPlayState);
         }
     }
 
@@ -186,25 +188,20 @@ public class StepDetailFragment extends Fragment {
     public void onPause()
     {
         super.onPause();
-        if (mExoPlayer!=null) {
-            Log.d(DEBUG_TAG,"--------STOPPING THE EXO PLAYER RESOURCES---------");
-            mExoPlayer.stopPlayer();
+        if (mPlayer !=null)
+        {
+            Log.d(DEBUG_TAG,"--------RELEASING  THE EXO PLAYER RESOURCES---------");
             //save the variables when the app goes to background
             //to restore the player state gracefully
-            mCurrentPosition = mExoPlayer.getCurrentPosition();
-            mVideoPlayState = mExoPlayer.getPlayWhenReady();
+            mCurrentPosition = mPlayer.getCurrentPosition();
+            mVideoPlayState = mPlayer.getPlayWhenReady();
+            mPlayer.stopPlayer();
+            mPlayer.releasePlayer(); // release the exo player resources
+            mNeedsSetUp = true; // in case the user went in background the player needs to bet resumed
         }
     }
 
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (mExoPlayer!=null) {
-            Log.d(DEBUG_TAG,"--------RELEASING THE EXO PLAYER RESOURCES---------");
-            mExoPlayer.releasePlayer();
-        }
-    }
 }
 
 

@@ -127,7 +127,7 @@ public class StepDetailFragment extends Fragment {
             //Set up exo player
             mPlayerView = mInflatedView.findViewById(R.id.simpleExoPlayerView);
 
-//            if(mNeedsSetUp) setUpPlayer(mInflatedView); // setup the player only if the player instance is null
+            if(mNeedsSetUp) setUpPlayer(mInflatedView); // setup the player only if the player instance is null
         }
         return mInflatedView;
     }
@@ -175,7 +175,7 @@ public class StepDetailFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if(mNeedsSetUp) // check the boolean if the player needs to be set up
+        if(mNeedsSetUp && mPlayer != null) // check the boolean if the player needs to be set up
         {
             Log.d(DEBUG_TAG,"Setting up player....");
             setUpPlayer(mInflatedView);

@@ -125,7 +125,7 @@ public class DetailFragment extends Fragment
         MyIngredientsAdapter ingredientsAdapter = new MyIngredientsAdapter();
         RecyclerView rvIngredients = inflatedView.findViewById(R.id.rv_ingredients_list);
         rvIngredients.setAdapter(ingredientsAdapter);
-        rvIngredients.setLayoutManager(new GridLayoutManager(inflatedView.getContext(),2)); // use gridlayout to display the ingredients of a list as a grid
+        rvIngredients.setLayoutManager(new LinearLayoutManager(inflatedView.getContext())); // use Linear to display the ingredients of a list as a grid
         ingredientsAdapter.setData(mRecipeClicked.getIngredients());
     }
 

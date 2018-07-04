@@ -20,4 +20,9 @@ What I built is an Android app that fetches some info from a fixed web endpoint 
 - *Gson* used along Retrofit to map JSON to Java objects
 
 
-### Screenshots ( **coming soon** )
+### Screenshots
+
+<img src="Images/recipe_list.png" width ="280" >
+<img src = "Images/step_list.png" width="280">
+<img src = "Images/step_detail.png" width="280">
+

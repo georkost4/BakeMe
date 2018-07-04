@@ -1,0 +1,5 @@
+
+squid:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(ÇÚÔÛ8·ë ŠÆ,
+qsquid:S00116"TRename this field "DEBUG_TAG" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¬Ë¾ö8¸ë ŠÆ,
+qsquid:UselessImportCheck"HRemove this unused import 'android.support.v7.widget.GridLayoutManager'.(ŸéÖÚ8¸ë ŠÆ,
+|squid:S00120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(ééú¡ÿÿÿÿÿ8¸ë ŠÆ,

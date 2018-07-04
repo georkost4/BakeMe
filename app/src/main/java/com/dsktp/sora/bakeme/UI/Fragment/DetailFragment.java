@@ -67,7 +67,7 @@ import static com.dsktp.sora.bakeme.Utils.Constants.RECIPE_CLICKED_KEY;
 public class DetailFragment extends Fragment
 {
     private Recipe  mRecipeClicked;
-    private String DEBUG_TAG = "#" +this.getClass().getSimpleName();
+    private  String DEBUG_TAG = "#" +this.getClass().getSimpleName();
 
     public DetailFragment(){}
 
@@ -95,7 +95,7 @@ public class DetailFragment extends Fragment
         //inflate the layout
         View inflatedView = inflater.inflate(R.layout.fragment_recipe_step_list,container,false);
 
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(mRecipeClicked.getName()); // change the title bar name to the recipe name
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(mRecipeClicked.getName() + " Ingredients"); // change the title bar name to the recipe name
 
         //set up step rv
         setUpStepRecyclerView(inflatedView);

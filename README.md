@@ -7,6 +7,7 @@ What I built is an Android app that fetches some info from a fixed web endpoint 
 
 ### Features
 
+- Single Activity with *Fragments*
 - Master / Detail flow for Tablets
 - Companion Widget
 - Error Handling ( *bad* data on purpose)
@@ -22,7 +23,5 @@ What I built is an Android app that fetches some info from a fixed web endpoint 
 
 ### Screenshots
 
-<img src="Images/recipe_list.png" width ="280" >
-<img src = "Images/step_list.png" width="280">
-<img src = "Images/step_detail.png" width="280">
+<img src="Images/recipe_list.png" width ="280" > <img src = "Images/step_list.png" width="280"> <img src = "Images/step_detail.png" width="280">
 
